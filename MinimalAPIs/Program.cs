@@ -2,16 +2,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MinimalAPIs.Models;
+using MinimalAPIs.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using MinimalAPIs.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? // from Secrets.json
                                     builder.Configuration["ConnectionString"];          // from appsettings.json
 
-//builder.Services.AddDbContext<yourDbContext>(options => options.UseSqlServer(yourConnectionString));
+builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
 
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
 
