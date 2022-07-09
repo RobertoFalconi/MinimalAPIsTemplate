@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using MinimalAPIs.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStringFromSecrets = builder.Configuration.GetConnectionString("connectionstring");
-var connectionStringFromAppsettings = builder.Configuration["ConnectionString"];
+var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? // from Secrets.json
+                                    builder.Configuration["ConnectionString"];          // from appsettings.json
+
 //builder.Services.AddDbContext<yourDbContext>(options => options.UseSqlServer(yourConnectionString));
 
-//var key = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -40,12 +40,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         }
     };
 });
+
 builder.Services.AddAuthorization();
 
 builder.Logging.AddJsonConsole();
+
 builder.Services.AddHealthChecks();
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SupportNonNullableReferenceTypes();
@@ -76,6 +79,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddScoped<IMinimalService, MinimalService>();
+
 var app = builder.Build();
 
 app.UseHsts();
@@ -92,22 +97,23 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BT Web API JSON v1");
         options.SwaggerEndpoint("/swagger/v1/swagger.yaml", "BT Web API YAML v1");
     });
+
+    app.MapGet("/generateToken", () =>
+    {
+        var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
+        var jwtPayload = new JwtPayload(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
+        jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
+        return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
+    });
+
+    app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 }
 else
 {
     app.UseExceptionHandler("/error");
 }
 
-app.MapGet("/generateToken", () =>
-{
-    //var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.RsaSha256));
-    var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
-    var jwtPayload = new JwtPayload(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
-    jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-    return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
-});
-
-app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+app.MapGet("/getDouble", (IMinimalService minimalService, int a) => minimalService.Double(a, new CancellationToken()));
 
 app.MapGet("/error", () => "An error happened.");
 
