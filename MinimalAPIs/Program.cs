@@ -26,7 +26,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = key
+        IssuerSigningKey = key,
+        TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key
     };
     options.Events = new JwtBearerEvents
     {
@@ -102,12 +103,20 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/generateToken", () =>
     {
         var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
-        var jwtPayload = new JwtPayload(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
+        var jwtPayload = new JwtPayload(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.AddMinutes(30), null);
         jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
         return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
     });
 
     app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+
+    app.MapGet("/generateTokenEncrypted", () =>
+    {
+        var ep = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature), ep);
+        token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    });
 }
 else
 {
