@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MinimalAPIs.Models;
 using MinimalAPIs.Services;
+using MinimalAPIs.Handlers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -81,6 +82,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddScoped<MyTokenHandler>();
 builder.Services.AddScoped<IMinimalService, MinimalService>();
 
 var app = builder.Build();
@@ -91,6 +93,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<MyTokenHandler>()?
+        .RegisterTokenAPIs(app, key);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -99,31 +107,11 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BT Web API JSON v1");
         options.SwaggerEndpoint("/swagger/v1/swagger.yaml", "BT Web API YAML v1");
     });
-
-    app.MapGet("/generateToken", () =>
-    {
-        var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
-        var jwtPayload = new JwtPayload(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.AddMinutes(30), null);
-        jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-        return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
-    });
-
-    app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
-
-    app.MapGet("/generateTokenEncrypted", () =>
-    {
-        var ep = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
-        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature), ep);
-        token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    });
 }
 else
 {
     app.UseExceptionHandler("/error");
 }
-
-app.MapGet("/getDouble", (IMinimalService minimalService, int a) => minimalService.Double(a, new CancellationToken()));
 
 app.MapGet("/error", () => "An error happened.");
 
