@@ -2,20 +2,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
 using MinimalAPIs.Services;
-using MinimalAPIs.Handlers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? // from Secrets.json
                                     builder.Configuration["ConnectionString"];          // from appsettings.json
 
 builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
-
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -82,8 +82,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddScoped<IMyTokenService, MyTokenService>();
 builder.Services.AddScoped<MyTokenHandler>();
-builder.Services.AddScoped<IMinimalService, MinimalService>();
 
 var app = builder.Build();
 
@@ -92,12 +92,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.GetService<MyTokenHandler>()?
-        .RegisterTokenAPIs(app, key);
-}
 
 if (app.Environment.IsDevelopment())
 {
@@ -113,7 +107,13 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.MapGet("/error", () => "An error happened.");
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<MyTokenHandler>()?
+        .RegisterAPIs(app);
+}
+
+app.MapGet("/error", () => "An error occurred.");
 
 app.MapHealthChecks("/healthz");
 
