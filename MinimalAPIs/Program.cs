@@ -31,13 +31,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKeys = keys,
-        TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key
+        TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
+        //IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
+        //{
+        //    return new List<X509SecurityKey> { keyCert };
+        //}
     };
     options.Events = new JwtBearerEvents
     {
         OnTokenValidated = context =>
         {
             var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
+            var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.GetValueOrDefault("kid");
             if (prova == null)
             {
                 context?.Fail("Unauthorized");
