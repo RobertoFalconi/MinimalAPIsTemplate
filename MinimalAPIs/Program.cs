@@ -6,11 +6,14 @@ using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
 using MinimalAPIs.Services;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
+var keys = new List<SecurityKey> { key, keyCert };
 
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? // from Secrets.json
                                     builder.Configuration["ConnectionString"];          // from appsettings.json
@@ -27,7 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = key,
+        IssuerSigningKeys = keys,
         TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key
     };
     options.Events = new JwtBearerEvents

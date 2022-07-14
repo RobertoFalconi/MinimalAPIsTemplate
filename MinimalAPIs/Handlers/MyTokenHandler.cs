@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MinimalAPIs.Services;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace MinimalAPIs.Handlers
@@ -20,6 +21,7 @@ namespace MinimalAPIs.Handlers
             var issuer = app.Configuration["Jwt:Issuer"];
             var audience = app.Configuration["Jwt:Audience"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:Key"]));
+            var keyCert = new X509SecurityKey(new X509Certificate2(app.Configuration["Certificate:Path"], app.Configuration["Certificate:Password"]));
 
             app.MapGet("/generateToken", () =>
             {
@@ -35,6 +37,14 @@ namespace MinimalAPIs.Handlers
                 var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature), ep);
                 token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
                 return new JwtSecurityTokenHandler().WriteToken(token);
+            });
+
+            app.MapGet("/generateTokenFromCertificate", () =>
+            {
+                var jwtHeader = new JwtHeader(new SigningCredentials(keyCert, SecurityAlgorithms.RsaSha256));
+                var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
+                jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
+                return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
             });
 
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
