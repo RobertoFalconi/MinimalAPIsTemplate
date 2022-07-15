@@ -30,25 +30,41 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKeys = keys,
+        //IssuerSigningKeys = keys,
         TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
-        //IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
-        //{
-        //    return new List<X509SecurityKey> { keyCert };
-        //}
+        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
+        {
+            return new List<SecurityKey> { key };
+        }
     };
+    
     options.Events = new JwtBearerEvents
     {
-        OnTokenValidated = context =>
+        OnMessageReceived = async context =>
         {
-            var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
-            var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.GetValueOrDefault("kid");
-            if (prova == null)
+            var token = context.Request.Headers.FirstOrDefault(x => x.Key.Equals("Authorization")).Value.ToString();
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                context?.Fail("Unauthorized");
+                var tokenS = new JwtSecurityTokenHandler().ReadToken(token.Split("Bearer ")[1]) as JwtSecurityToken;
+                var kid = tokenS?.Header.Kid;
+                if (!string.IsNullOrWhiteSpace(kid))
+                {
+                    var db = context.HttpContext.RequestServices.GetRequiredService<MinimalDbContext>();
+                    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+                    keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
+                }
             }
-            return Task.CompletedTask;
         }
+        //OnTokenValidated = context =>
+        //{
+        //    var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
+        //    var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.Kid;
+        //    if (prova == null)
+        //    {
+        //        context?.Fail("Unauthorized");
+        //    }
+        //    return Task.CompletedTask;
+        //}
     };
 });
 
