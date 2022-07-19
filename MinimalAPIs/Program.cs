@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -37,7 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             return new List<SecurityKey> { key };
         }
     };
-    
+
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = async context =>
@@ -137,7 +138,12 @@ using (var scope = app.Services.CreateScope())
         .RegisterAPIs(app);
 }
 
-app.MapGet("/error", () => "An error occurred.");
+app.Map("/error", (HttpContext context) =>
+{
+    var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+    return Results.Json(data: error?.Message ?? "Si è verificato un errore durante l'esecuzione della richiesta.", statusCode: StatusCodes.Status400BadRequest);
+}).ExcludeFromDescription();
 
 app.MapHealthChecks("/healthz");
 
