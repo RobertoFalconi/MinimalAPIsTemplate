@@ -7,6 +7,6 @@ Example of APIs:
 - JWS nested in JWE encrypted with AES256  
 - Login (authentication) test with one of the generated Bearer token  
 
-Others: 
+Other common examples with Minimal API pattern: 
 - Example of asynchronous service call with Dependency Injection (DI)  
 - Example of UseExceptionHandler Middleware usage  
