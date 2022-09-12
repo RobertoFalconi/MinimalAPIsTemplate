@@ -15,4 +15,4 @@ Other common examples with Minimal API pattern:
 # How to use
 1. Call a generateToken method and copy the returned Bearer token *token*
 2. Login with value: "Bearer *token*" (without double quotes, replace *token* with its value)
-3. Call tryToken method. You should get 200 if authenticated, 401 otherwise
+3. Call tryToken method. You will get 200 if authenticated, 401 otherwise
