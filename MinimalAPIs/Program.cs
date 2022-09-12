@@ -31,7 +31,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        //IssuerSigningKeys = keys,
+        IssuerSigningKeys = keys,
         TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
         {
@@ -39,34 +39,34 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         }
     };
 
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = async context =>
-        {
-            var token = context.Request.Headers.FirstOrDefault(x => x.Key.Equals("Authorization")).Value.ToString();
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                var tokenS = new JwtSecurityTokenHandler().ReadToken(token.Split("Bearer ")[1]) as JwtSecurityToken;
-                var kid = tokenS?.Header.Kid;
-                if (!string.IsNullOrWhiteSpace(kid))
-                {
-                    var db = context.HttpContext.RequestServices.GetRequiredService<MinimalDbContext>();
-                    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
-                    keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
-                }
-            }
-        }
-        //OnTokenValidated = context =>
-        //{
-        //    var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
-        //    var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.Kid;
-        //    if (prova == null)
-        //    {
-        //        context?.Fail("Unauthorized");
-        //    }
-        //    return Task.CompletedTask;
-        //}
-    };
+    //options.Events = new JwtBearerEvents
+    //{
+    //    OnMessageReceived = async context =>
+    //    {
+    //        var token = context.Request.Headers.FirstOrDefault(x => x.Key.Equals("Authorization")).Value.ToString();
+    //        if (!string.IsNullOrWhiteSpace(token))
+    //        {
+    //            var tokenS = new JwtSecurityTokenHandler().ReadToken(token.Split("Bearer ")[1]) as JwtSecurityToken;
+    //            var kid = tokenS?.Header.Kid;
+    //            if (!string.IsNullOrWhiteSpace(kid))
+    //            {
+    //                var db = context.HttpContext.RequestServices.GetRequiredService<MinimalDbContext>();
+    //                key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+    //                keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
+    //            }
+    //        }
+    //    }
+    //    OnTokenValidated = context =>
+    //    {
+    //        var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
+    //        var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.Kid;
+    //        if (prova == null)
+    //        {
+    //            context?.Fail("Unauthorized");
+    //        }
+    //        return Task.CompletedTask;
+    //    }
+    //};
 });
 
 builder.Services.AddAuthorization();
@@ -118,19 +118,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "BT Web API JSON v1");
-        options.SwaggerEndpoint("/swagger/v1/swagger.yaml", "BT Web API YAML v1");
-    });
-}
-else
-{
-    app.UseExceptionHandler("/error");
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseExceptionHandler("/error");
 
 using (var scope = app.Services.CreateScope())
 {
