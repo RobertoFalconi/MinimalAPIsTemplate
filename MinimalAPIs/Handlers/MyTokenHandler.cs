@@ -23,13 +23,13 @@ namespace MinimalAPIs.Handlers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:Key"]));
             var keyCert = new X509SecurityKey(new X509Certificate2(app.Configuration["Certificate:Path"], app.Configuration["Certificate:Password"]));
 
-            app.MapGet("/generateToken", () =>
+            app.MapGet("/generateToken", async () =>
             {
                 var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
-                jwtHeader.Add("kid","PartitaIVA");
+                jwtHeader.Add("kid", "PartitaIVA");
                 var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(30), null);
                 jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-                return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
+                return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload)));
             });
 
             app.MapGet("/generateTokenEncrypted", () =>
