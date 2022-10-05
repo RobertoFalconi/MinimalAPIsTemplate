@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
@@ -99,6 +101,8 @@ builder.Services.AddAuthorization();
 builder.Logging.AddJsonConsole();
 builder.Services.AddHealthChecks();
 builder.Services.AddScoped<MyTokenHandler>();
+builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
+JobStorage.Current = new MemoryStorage();
 
 var app = builder.Build();
 
@@ -118,6 +122,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting().UseEndpoints(endpoints => endpoints.MapHangfireDashboard());
 app.UseExceptionHandler("/error");
 
 app.Map("/error", (HttpContext context) =>
