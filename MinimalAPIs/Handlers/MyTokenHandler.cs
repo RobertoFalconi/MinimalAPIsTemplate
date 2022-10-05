@@ -6,16 +6,8 @@ using System.Text;
 
 namespace MinimalAPIs.Handlers
 {
-    public class MyTokenHandler //: Microsoft.IdentityModel.Tokens.TokenHandler
+    public class MyTokenHandler 
     {
-
-        private readonly IMyTokenService _tokenService;
-
-        public MyTokenHandler(IMyTokenService tokenService)
-        {
-            _tokenService = tokenService;
-        }
-
         public void RegisterAPIs(WebApplication app)
         {
             var issuer = app.Configuration["Jwt:Issuer"];
@@ -51,7 +43,7 @@ namespace MinimalAPIs.Handlers
 
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-            app.MapGet("/getDouble", (int a) => _tokenService.Double(a, new CancellationToken()));
+            app.MapGet("/getDouble", (int a) => new MyTokenService().Double(a, new CancellationToken()));
         }
     }
 }

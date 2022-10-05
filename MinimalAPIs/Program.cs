@@ -15,7 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
 var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
 var keys = new List<SecurityKey> { key, keyCert };
-
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? // from Secrets.json
                                     builder.Configuration["ConnectionString"];          // from appsettings.json
 
@@ -68,11 +67,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     //    }
     //};
 });
-
 builder.Services.AddAuthorization();
 
 builder.Logging.AddJsonConsole();
-
 builder.Services.AddHealthChecks();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -107,27 +104,28 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddScoped<IMyTokenService, MyTokenService>();
 builder.Services.AddScoped<MyTokenHandler>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<MyTokenService>();
+    scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app);
+}
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseHsts();
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
 app.UseExceptionHandler("/error");
-
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.GetService<MyTokenHandler>()?
-        .RegisterAPIs(app);
-}
 
 app.Map("/error", (HttpContext context) =>
 {

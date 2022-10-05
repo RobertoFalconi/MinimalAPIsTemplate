@@ -1,11 +1,6 @@
 ﻿namespace MinimalAPIs.Services
 {
-    public interface IMyTokenService
-    {
-        Task<double> Double(double a, CancellationToken token);
-    }
-
-    public class MyTokenService : IMyTokenService
+    public class MyTokenService
     {
         public async Task<double> Double(double a, CancellationToken token)
         {
