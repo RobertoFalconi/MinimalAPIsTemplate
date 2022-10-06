@@ -17,7 +17,7 @@ namespace MinimalAPIs.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("yourConnectionString");
+                optionsBuilder.UseSqlServer("No connection string set for database.");
             }
         }
 

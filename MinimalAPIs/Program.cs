@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
 var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
 var keys = new List<SecurityKey> { key, keyCert };
-var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"];          // from Secrets.json ?? from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"]?.ToString() ?? "";          // from Secrets.json ?? from appsettings.json
 
 builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddEndpointsApiExplorer();
@@ -123,6 +123,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRouting().UseEndpoints(endpoints => endpoints.MapHangfireDashboard());
+app.MapHealthChecks("/healthz");
 app.UseExceptionHandler("/error");
 
 app.Map("/error", (HttpContext context) =>
@@ -131,7 +132,5 @@ app.Map("/error", (HttpContext context) =>
 
     return Results.Json(data: error?.Message ?? "Si è verificato un errore durante l'esecuzione della richiesta.", statusCode: StatusCodes.Status400BadRequest);
 }).ExcludeFromDescription();
-
-app.MapHealthChecks("/healthz");
 
 app.Run();
