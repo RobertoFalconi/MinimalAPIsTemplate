@@ -16,9 +16,9 @@ namespace MinimalAPIs.Services
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload)));
         }
 
-        public async Task<string> GenerateSignedToken(string issuer, string audience, SymmetricSecurityKey key)
+        public async Task<string> GenerateSignedToken(string issuer, string audience, SymmetricSecurityKey symmetricKey)
         {
-            var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
+            var jwtHeader = new JwtHeader(new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature));
             jwtHeader.Add("kid", "YourKid");
 
             var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(30), null);
@@ -27,9 +27,9 @@ namespace MinimalAPIs.Services
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload)));
         }
 
-        public async Task<string> GenerateSignedTokenFromCertificate(string issuer, string audience, X509SecurityKey key)
+        public async Task<string> GenerateSignedTokenFromCertificate(string issuer, string audience, X509SecurityKey asymmetricKey)
         {
-            var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.RsaSha256));
+            var jwtHeader = new JwtHeader(new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSha256));
 
             var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
             jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "YourCustomClaim"));
@@ -37,11 +37,22 @@ namespace MinimalAPIs.Services
             return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload)));
         }
 
-        public async Task<string> GenerateEncryptedToken(string issuer, string audience, SymmetricSecurityKey key)
+        public async Task<string> GenerateEncryptedToken(string issuer, string audience, SymmetricSecurityKey symmetricKey)
         {
-            var ep = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
+            var ep = new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
 
-            var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature), ep);
+            var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature), ep);
+            token.Header.Add("kid", "YourKid");
+            token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "YourCustomClaim"));
+
+            return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
+        public async Task<string> GenerateEncryptedTokenFromCertificate(string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey asymmetricKey)
+        {
+            var ep = new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
+
+            var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSha256), ep);
             token.Header.Add("kid", "YourKid");
             token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "YourCustomClaim"));
 

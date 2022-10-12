@@ -38,6 +38,12 @@ namespace MinimalAPIs.Handlers
                 return token;
             });
 
+            app.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+            {
+                var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, keyCert);
+                return token;
+            });
+
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
         }
     }
