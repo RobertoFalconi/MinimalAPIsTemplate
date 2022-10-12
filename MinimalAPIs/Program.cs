@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         TokenDecryptionKey = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
         {
-            return new List<SecurityKey> { key };
+            return keys;
         }
     };
 

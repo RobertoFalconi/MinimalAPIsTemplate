@@ -1,12 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MinimalAPIs.Services;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace MinimalAPIs.Handlers
 {
-    public class MyTokenHandler 
+    public class MyTokenHandler
     {
         public void RegisterAPIs(WebApplication app)
         {
@@ -17,25 +16,26 @@ namespace MinimalAPIs.Handlers
 
             app.MapGet("/generateToken", async () =>
             {
-                var token = await new MyTokenService().GenerateToken(issuer, audience, key);
+                var token = await new MyTokenService().GenerateToken();
                 return token;
             });
 
-            app.MapGet("/generateTokenEncrypted", () =>
+            app.MapGet("/generateSignedToken", async () =>
             {
-                var ep = new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
-                var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature), ep);
-                token.Header.Add("kid","PartitaIVA");
-                token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                var token = await new MyTokenService().GenerateSignedToken(issuer, audience, key);
+                return token;
             });
 
-            app.MapGet("/generateTokenFromCertificate", () =>
+            app.MapGet("/generateSignedTokenFromCertificate", async () =>
             {
-                var jwtHeader = new JwtHeader(new SigningCredentials(keyCert, SecurityAlgorithms.RsaSha256));
-                var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.Add(new TimeSpan(0, 0, 1800)), null);
-                jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-                return new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload));
+                var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, keyCert);
+                return token;
+            });
+
+            app.MapGet("/generateEncryptedToken", async () =>
+            {
+                var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, key);
+                return token;
             });
 
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
