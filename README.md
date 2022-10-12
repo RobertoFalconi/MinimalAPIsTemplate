@@ -3,10 +3,10 @@ Complete and working Minimal APIs template, with support to Docker, Entity Frame
   
 Example of APIs:  
 - JWT unsigned and not encrypted for basic knowledge  
-- JWS ("alg" HS512) signed with HMAC SHA-512 using a symmetric key  
-- JWS ("alg" RS512) signed with RSA SHA-512 using a X509 Certificate asymmetric key  
-- JWE ("enc" A256CBC-HS512) encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 ("alg" HS512) using a symmetric key  
-- JWE ("enc" A256CBC-HS512) encrypted with AES256 using a symmetric key and signed with RSA SHA-512 ("alg" RS512) using a X509 Certificate asymmetric key  
+- JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
+- JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
+- JWE ("enc": "A256CBC-HS512") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 ("alg": "dir") using a symmetric key  
+- JWE ("enc": "A256CBC-HS512") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 ("alg": "dir") using a X509 Certificate asymmetric key  
 - Login (authentication) test with one of the generated Bearer token  
 
 Other examples in this template:  
@@ -16,5 +16,8 @@ Other examples in this template:
 
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
-2. Login with value: "Bearer *token*" (without double quotes, replace *token* with its value)  
+2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
+
+# Sources
+1. https://www.rfc-editor.org/rfc/rfc7518
