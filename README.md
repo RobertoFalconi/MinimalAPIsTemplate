@@ -20,4 +20,4 @@ Other examples in this template:
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
 # Sources
-1. https://www.rfc-editor.org/rfc/rfc7518
+1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518
