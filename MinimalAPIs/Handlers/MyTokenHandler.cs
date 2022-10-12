@@ -17,11 +17,8 @@ namespace MinimalAPIs.Handlers
 
             app.MapGet("/generateToken", async () =>
             {
-                var jwtHeader = new JwtHeader(new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature));
-                jwtHeader.Add("kid", "PartitaIVA");
-                var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(30), null);
-                jwtPayload.AddClaim(new System.Security.Claims.Claim("custom", "prova"));
-                return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(new JwtSecurityToken(jwtHeader, jwtPayload)));
+                var token = await new MyTokenService().GenerateToken(issuer, audience, key);
+                return token;
             });
 
             app.MapGet("/generateTokenEncrypted", () =>
@@ -42,8 +39,6 @@ namespace MinimalAPIs.Handlers
             });
 
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
-
-            app.MapGet("/getDouble", (int a) => new MyTokenService().Double(a, new CancellationToken()));
         }
     }
 }
