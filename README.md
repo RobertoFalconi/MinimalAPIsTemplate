@@ -3,9 +3,10 @@ Complete and working Minimal APIs template, with support to Docker, Entity Frame
   
 Example of APIs:  
 - JWT unsigned and not encrypted for basic knowledge  
-- JWS signed with HMAC SHA-256 (HS256) and a symmetric key  
-- JWS signed with RSA SHA-512 (RS512) and a X509 Certificate asymmetric key  
-- JWE encrypted with AES256 and signed with one of the just mentioned signature methods  
+- JWS signed with HMAC SHA-256 (HS256) using a symmetric key  
+- JWS signed with RSA SHA-512 (RS512) using a X509 Certificate asymmetric key  
+- JWE encrypted with AES256 using a symmetric key and signed with HMAC SHA-256 (HS256) using a symmetric key  
+- JWE encrypted with AES256 using a symmetric key and signed with RSA SHA-512 (RS512) using a X509 Certificate asymmetric key  
 - Login (authentication) test with one of the generated Bearer token  
 
 Other examples in this template:  
