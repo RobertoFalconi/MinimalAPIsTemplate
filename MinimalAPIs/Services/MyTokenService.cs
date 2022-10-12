@@ -18,7 +18,7 @@ namespace MinimalAPIs.Services
 
         public async Task<string> GenerateSignedToken(string issuer, string audience, SymmetricSecurityKey symmetricKey)
         {
-            var jwtHeader = new JwtHeader(new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature));
+            var jwtHeader = new JwtHeader(new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512));
             jwtHeader.Add("kid", "YourKid");
 
             var jwtPayload = new JwtPayload(issuer, audience, null, null, DateTime.Now.AddMinutes(30), null);
@@ -41,7 +41,7 @@ namespace MinimalAPIs.Services
         {
             var ep = new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512);
 
-            var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512Signature), ep);
+            var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer, audience, null, null, DateTime.Now.AddHours(1), null, new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha512), ep);
             token.Header.Add("kid", "YourKid");
             token.Payload.AddClaim(new System.Security.Claims.Claim("custom", "YourCustomClaim"));
 
