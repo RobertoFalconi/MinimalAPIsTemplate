@@ -16,7 +16,7 @@ Other examples in this template:
 
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
-2. Log in clicking the Authorize green button in the swagger and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
+2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
 # Sources
