@@ -121,8 +121,7 @@ if (app.Environment.IsDevelopment())
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
-app.UseAuthorization();
-app.UseRouting().UseEndpoints(endpoints => endpoints.MapHangfireDashboard());
+app.UseRouting().UseAuthorization().UseEndpoints(endpoints => endpoints.MapHangfireDashboard());
 app.MapHealthChecks("/healthz");
 app.UseExceptionHandler("/error");
 
