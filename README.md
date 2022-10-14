@@ -5,8 +5,8 @@ Example of APIs:
 - JWT unsigned and not encrypted for basic knowledge  
 - JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
 - JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
-- JWE ("enc": "A256CBC-HS512") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 ("alg": "dir") using a symmetric key  
-- JWE ("enc": "A256CBC-HS512") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 ("alg": "dir") using a X509 Certificate asymmetric key  
+- JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 using a symmetric key  
+- JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 using a X509 Certificate asymmetric key  
 - Login (authentication) test with one of the generated Bearer token  
 
 Other examples in this template:  
