@@ -1,5 +1,5 @@
 # MinimalAPIsTemplate
-Complete and working Minimal APIs template, with support to Docker, Entity Framework, OpenAPI Swagger, OAuth 2.0 Authentication and Bearer Token, JWT, JWS, JWE.  
+Complete and working Minimal APIs template, with support to Docker, Entity Framework, OpenAPI Swagger, OAuth 2.0 Authentication with JSON Web Algorithms (JWA), using Bearer Token, JWT, JWS, JWE.  
   
 Example of APIs:  
 - JWT unsigned and not encrypted for basic knowledge  
