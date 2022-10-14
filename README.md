@@ -10,9 +10,9 @@ Example of APIs:
 - Login (authentication) test with one of the generated Bearer token  
 
 Other examples in this template:  
-- Minimal APIs pattern with handlers
-- Examples of asynchronous service call with Dependency Injection (DI)  
-- Examples of UseExceptionHandler Middleware usage  
+- Minimal APIs pattern with Handlers, Endpoints, Authentication and Authorization  
+- Examples of asynchronous service calls with Dependency Injection (DI)  
+- Examples of Hsts, UseExceptionHandler, HealthChecks, Hangfire and other services and middlewares usages  
 
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
@@ -20,4 +20,4 @@ Other examples in this template:
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
 # Sources
-1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518
+1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
