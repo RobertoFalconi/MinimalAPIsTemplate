@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Hangfire;
+using Microsoft.IdentityModel.Tokens;
 using MinimalAPIs.Services;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -45,6 +46,9 @@ namespace MinimalAPIs.Handlers
             });
 
             app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+
+            app.MapGet("/recurringTryToken", () => RecurringJob.AddOrUpdate(() => Results.Ok(null), Cron.Minutely())).RequireAuthorization();
+            
         }
     }
 }
