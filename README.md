@@ -19,5 +19,5 @@ Other examples in this template:
 2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
-# Sources
+# Sources and useful links
 1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
