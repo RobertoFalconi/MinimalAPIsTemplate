@@ -1,7 +1,7 @@
 # MinimalAPIsTemplate
 Complete and working Minimal APIs template, with support to Docker, Entity Framework, OpenAPI Swagger, OAuth 2.0 Authentication with JSON Web Algorithms (JWA), using Bearer Token, JWT, JWS, JWE.  
   
-Example of implemented APIs ready to go:  
+Examples of implemented APIs ready to go:  
 - JWT unsigned and not encrypted for basic knowledge  
 - JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
 - JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
