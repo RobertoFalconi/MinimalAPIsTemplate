@@ -10,7 +10,7 @@ Examples of implemented APIs ready to go:
 - Login (authentication) test with one of the generated Bearer token  
 
 Other examples in this template:  
-- Minimal APIs pattern with Handlers, Endpoints, Authentication and Authorization  
+- Minimal APIs architecture pattern with Handlers, Endpoints, Authentication and Authorization  
 - Examples of asynchronous service calls with Dependency Injection (DI) and scoped services  
 - Examples of support to Docker, Entity Framework, OpenAPI, Swagger  
 - Examples of Hsts, Exception Handler, Json Console, Health Checks, Hangfire, Swashbuckle and other services and middlewares  
