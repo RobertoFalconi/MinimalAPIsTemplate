@@ -14,8 +14,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
-var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
+var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"]!, builder.Configuration["Certificate:Password"]));
 var keys = new List<SecurityKey> { key, keyCert };
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"]?.ToString() ?? "";          // from Secrets.json ?? from appsettings.json
 
@@ -68,35 +68,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             return keys;
         }
     };
-
-    //options.Events = new JwtBearerEvents
-    //{
-    //    OnMessageReceived = async context =>
-    //    {
-    //        var token = context.Request.Headers.FirstOrDefault(x => x.Key.Equals("Authorization")).Value.ToString();
-    //        if (!string.IsNullOrWhiteSpace(token))
-    //        {
-    //            var tokenS = new JwtSecurityTokenHandler().ReadToken(token.Split("Bearer ")[1]) as JwtSecurityToken;
-    //            var kid = tokenS?.Header.Kid;
-    //            if (!string.IsNullOrWhiteSpace(kid))
-    //            {
-    //                var db = context.HttpContext.RequestServices.GetRequiredService<MinimalDbContext>();
-    //                key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
-    //                keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"], builder.Configuration["Certificate:Password"]));
-    //            }
-    //        }
-    //    }
-    //    OnTokenValidated = context =>
-    //    {
-    //        var prova = context?.Principal?.Claims?.FirstOrDefault(x => x.Type == "custom")?.Value;
-    //        var prova2 = (context?.SecurityToken as JwtSecurityToken)?.Header.Kid;
-    //        if (prova == null)
-    //        {
-    //            context?.Fail("Unauthorized");
-    //        }
-    //        return Task.CompletedTask;
-    //    }
-    //};
 });
 builder.Services.AddAuthorization();
 builder.Logging.AddJsonConsole();
