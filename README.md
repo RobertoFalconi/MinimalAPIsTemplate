@@ -12,8 +12,8 @@ Examples of implemented APIs ready to go:
 Other examples in this template:  
 - Minimal APIs architecture pattern with Handlers, Endpoints, Authentication and Authorization  
 - Examples of asynchronous service calls with Dependency Injection (DI) and scoped services  
-- Examples of support to Docker, Entity Framework, OpenAPI, Swagger  
-- Examples of Hsts, Exception Handler, Json Console, Health Checks, Hangfire, Swashbuckle and other services and middlewares  
+- Examples of support to Docker, Entity Framework, Swashbuckle (OpenAPI Swagger), Hangfire  
+- Examples of Hsts, Exception Handler, Json Console, Health Checks and other services and middlewares  
   
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
