@@ -1,5 +1,5 @@
 # MinimalAPIsTemplate
-Complete and working ASP.NET Core Minimal APIs template, with support to Docker, Entity Framework, OpenAPI Swagger, OAuth 2.0 Authentication with JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
+Complete and working ASP.NET Core Minimal APIs template, with OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
   
 Examples of implemented APIs ready to go:  
 - JWT unsigned and not encrypted for basic knowledge  
@@ -11,7 +11,8 @@ Examples of implemented APIs ready to go:
 
 Other examples in this template:  
 - Minimal APIs pattern with Handlers, Endpoints, Authentication and Authorization  
-- Examples of asynchronous service calls with Dependency Injection (DI)  
+- Examples of asynchronous service calls with Dependency Injection (DI) and scoped services  
+- Examples of support to Docker, Entity Framework, OpenAPI, Swagger  
 - Examples of Hsts, Exception Handler, Json Console, Health Checks, Hangfire, Swashbuckle and other services and middlewares  
   
 # How to use
