@@ -12,7 +12,7 @@ Examples of implemented APIs ready to go:
 Other examples in this template:  
 - Minimal APIs pattern with Handlers, Endpoints, Authentication and Authorization  
 - Examples of asynchronous service calls with Dependency Injection (DI)  
-- Examples of Hsts, UseExceptionHandler, HealthChecks, Hangfire and other services and middlewares usages  
+- Examples of Hsts, ExceptionHandler, JsonConsole, HealthChecks, Hangfire and other services and middlewares usages  
 
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
