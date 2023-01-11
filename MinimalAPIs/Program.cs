@@ -100,8 +100,9 @@ app.UseExceptionHandler("/error");
 app.Map("/error", (HttpContext context) =>
 {
     var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-    return Results.Json(data: error?.Message ?? "Si è verificato un errore durante l'esecuzione della richiesta.", statusCode: StatusCodes.Status400BadRequest);
+    var errorMessage = error?.Message ?? "Unknown error";
+    app.Logger.LogError(error, errorMessage);
+    return Results.Json(data: errorMessage, statusCode: StatusCodes.Status400BadRequest);
 }).ExcludeFromDescription();
 
 app.Run();
