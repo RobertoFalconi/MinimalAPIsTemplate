@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace MinimalAPIs.Models;
+﻿namespace MinimalAPIs.Models;
 
 public partial class MinimalDbContext : DbContext
 {

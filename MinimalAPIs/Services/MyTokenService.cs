@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-
-namespace MinimalAPIs.Services;
+﻿namespace MinimalAPIs.Services;
 
 public class MyTokenService
 {

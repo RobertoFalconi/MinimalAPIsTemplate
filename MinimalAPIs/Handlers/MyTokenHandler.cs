@@ -1,10 +1,4 @@
-﻿using Hangfire;
-using Microsoft.IdentityModel.Tokens;
-using MinimalAPIs.Services;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
-namespace MinimalAPIs.Handlers;
+﻿namespace MinimalAPIs.Handlers;
 
 public class MyTokenHandler
 {

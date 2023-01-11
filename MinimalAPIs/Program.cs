@@ -1,16 +1,16 @@
-using Hangfire;
+global using Hangfire;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.IdentityModel.Tokens;
+global using MinimalAPIs.Services;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Cryptography.X509Certificates;
+global using System.Text;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
-using MinimalAPIs.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,7 +93,9 @@ if (app.Environment.IsDevelopment())
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
-app.UseRouting().UseAuthorization().UseEndpoints(endpoints => endpoints.MapHangfireDashboard());
+app.UseRouting();
+app.UseAuthorization();
+app.UseHangfireDashboard();
 app.MapHealthChecks("/healthz");
 app.UseExceptionHandler("/error");
 
