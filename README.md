@@ -20,5 +20,13 @@ Other examples in this template:
 2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
+# How to generate a PFX certificate
+Use the following commands to generate a .pfx file using OpenSSL for Windows, then copy it to the Certificates folder of the project:  
+```
+openssl genrsa -aes256 -out sign-key.pem 2048  
+openssl req -new -x509 -sha256 -outform pem -key sign-key.pem -days 365 -out sign-cert.pem  
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem  
+```
+
 # Sources and useful links
 1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
