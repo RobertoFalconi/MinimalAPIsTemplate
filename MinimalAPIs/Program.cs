@@ -13,6 +13,7 @@ using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
