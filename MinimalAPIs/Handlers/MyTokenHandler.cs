@@ -4,6 +4,10 @@ public class MyTokenHandler
 {
     public void RegisterAPIs(WebApplication app)
     {
+        var logger = app.Logger;
+
+        logger.LogInformation("Inizio recupero parametri");
+        
         var issuer = app.Configuration["Jwt:Issuer"]!;
         var audience = app.Configuration["Jwt:Audience"]!;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:Key"]!));
