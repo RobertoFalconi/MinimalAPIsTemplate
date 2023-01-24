@@ -92,7 +92,6 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyTokenService>();
     scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app);
 }
 
