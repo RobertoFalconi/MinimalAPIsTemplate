@@ -89,24 +89,14 @@ JobStorage.Current = new MemoryStorage();
 // Add the app to the container.
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
     scope.ServiceProvider.GetService<MyTokenService>();
     scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app);
 }
 
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-else
-{
-    app.UseExceptionHandler("/Error");
-}
-
+// Configure the HTTP request pipeline.
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
@@ -114,6 +104,13 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseHangfireDashboard();
 app.MapHealthChecks("/healthz");
+app.UseExceptionHandler("/Error");
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.Map("/Error", (HttpContext context) =>
 {
@@ -123,4 +120,5 @@ app.Map("/Error", (HttpContext context) =>
     return Results.Json(data: errorMessage, statusCode: StatusCodes.Status400BadRequest);
 }).ExcludeFromDescription();
 
+// Run the app.
 app.Run();
