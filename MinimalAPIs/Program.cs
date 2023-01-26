@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
 
+// Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
 
 // Add configurations to the container.
@@ -99,8 +100,9 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHangfireDashboard();
 app.MapHealthChecks("/Health");
+app.UseHangfireDashboard();
+app.UseExceptionHandler("/Error");
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseDeveloperExceptionPage();
@@ -109,17 +111,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 app.Use(async (context, next) =>
 {
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        var errorMessage = ex.Message ?? "Unknown error";
-        app.Logger.LogError(ex, errorMessage.ToString());
-        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        await context.Response.WriteAsync(errorMessage);
-    }
+    await next();
+    if (context.Response.StatusCode == StatusCodes.Status404NotFound) context.Response.Redirect("/swagger/index.html");
 });
 
 // Run the app.
