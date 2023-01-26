@@ -7,7 +7,6 @@ global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using MinimalAPIs.Handlers;
 using MinimalAPIs.Models;
@@ -99,25 +98,29 @@ using (var scope = app.Services.CreateScope())
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseAuthentication();
-app.UseRouting();
 app.UseAuthorization();
 app.UseHangfireDashboard();
-app.MapHealthChecks("/healthz");
-app.UseExceptionHandler("/Error");
+app.MapHealthChecks("/Health");
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.Map("/Error", (HttpContext context) =>
+app.Use(async (context, next) =>
 {
-    var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-    var errorMessage = error?.Message ?? "Unknown error";
-    app.Logger.LogError(error, errorMessage.ToString());
-    return Results.Json(data: errorMessage, statusCode: StatusCodes.Status400BadRequest);
-}).ExcludeFromDescription();
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        var errorMessage = ex.Message ?? "Unknown error";
+        app.Logger.LogError(ex, errorMessage.ToString());
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await context.Response.WriteAsync(errorMessage);
+    }
+});
 
 // Run the app.
 app.Run();
