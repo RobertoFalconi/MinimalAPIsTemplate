@@ -1,4 +1,5 @@
 global using Hangfire;
+global using Hangfire.Common;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
 global using MinimalAPIs.Services;

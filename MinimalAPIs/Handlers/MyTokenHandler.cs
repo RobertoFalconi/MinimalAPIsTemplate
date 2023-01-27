@@ -45,7 +45,23 @@ public class MyTokenHandler
 
         app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-        app.MapGet("/recurringTryToken", () => RecurringJob.AddOrUpdate(() => Results.Ok(null), Cron.Minutely())).RequireAuthorization();
+        app.MapGet("/recurringTryToken", () =>
+        {
+            logger.LogInformation("Inizio RecurringJob");
 
+            var manager = new RecurringJobManager();
+            var service = new MyTokenService();
+
+            manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
+        }).RequireAuthorization();
+        
+        app.MapGet("/RemoveRecurringJob", () =>
+        {
+            logger.LogInformation("Inizio RecurringJob");
+
+            var manager = new RecurringJobManager();
+
+            manager.RemoveIfExists("RecurringJobId");
+        }).RequireAuthorization();
     }
 }
