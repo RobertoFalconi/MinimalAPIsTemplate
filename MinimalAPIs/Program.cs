@@ -6,11 +6,11 @@ global using MinimalAPIs.Services;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
-using Hangfire.MemoryStorage;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
-using MinimalAPIs.Handlers;
-using MinimalAPIs.Models;
+global using Hangfire.MemoryStorage;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.OpenApi.Models;
+global using MinimalAPIs.Handlers;
+global using MinimalAPIs.Models;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +27,10 @@ builder.Logging.AddJsonConsole();
 // Parameters
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"]?.ToString() ?? "";          // from Secrets.json ?? from appsettings.json
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
+var audience = builder.Configuration["Jwt:Audience"]!;
+var issuer = builder.Configuration["Jwt:Issuer"]!;
+
+// old
 var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"]!, builder.Configuration["Certificate:Password"]));
 var keys = new List<SecurityKey> { key, keyCert };
 
@@ -93,7 +97,7 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app);
+    scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
 }
 
 // Configure the HTTP request pipeline.

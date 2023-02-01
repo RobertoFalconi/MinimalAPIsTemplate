@@ -2,16 +2,9 @@
 
 public class MyTokenHandler
 {
-    public void RegisterAPIs(WebApplication app)
+    public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey keyCert)
     {
         var logger = app.Logger;
-
-        logger.LogInformation("Inizio recupero parametri");
-        
-        var issuer = app.Configuration["Jwt:Issuer"]!;
-        var audience = app.Configuration["Jwt:Audience"]!;
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(app.Configuration["Jwt:Key"]!));
-        var keyCert = new X509SecurityKey(new X509Certificate2(app.Configuration["Certificate:Path"]!, app.Configuration["Certificate:Password"]));
 
         app.MapGet("/generateToken", async () =>
         {
