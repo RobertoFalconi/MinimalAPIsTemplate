@@ -11,6 +11,11 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.OpenApi.Models;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models;
+using System.Security.Cryptography;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -29,9 +34,11 @@ var connectionString = builder.Configuration.GetConnectionString("connectionstri
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
-
-// old
-var keyCert = new X509SecurityKey(new X509Certificate2(builder.Configuration["Certificate:Path"]!, builder.Configuration["Certificate:Password"]));
+var rsa = RSA.Create();
+var req = new CertificateRequest("cn=foobar", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+File.WriteAllBytes(builder.Configuration["Certificate:Path"], cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
+var keyCert = new X509SecurityKey(cert);
 var keys = new List<SecurityKey> { key, keyCert };
 
 // Add services to the container.
