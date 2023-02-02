@@ -96,7 +96,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
+
+// Add custom services to the container.
 builder.Services.AddScoped<MyTokenHandler>();
+
+// Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
 JobStorage.Current = new MemoryStorage();
 
@@ -116,18 +120,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthChecks("/Health");
 app.UseHangfireDashboard();
-app.UseExceptionHandler("/Error");
+
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.Use(async (context, next) =>
+else
 {
-    await next();
-    if (context.Response.StatusCode == StatusCodes.Status404NotFound) context.Response.Redirect("/swagger/index.html");
-});
+    app.UseExceptionHandler("/Error");
+}
 
 // Run the app.
 app.Run();
