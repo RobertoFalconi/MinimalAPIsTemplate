@@ -30,7 +30,7 @@ builder.Configuration
 // Add loggers to the container.
 builder.Logging.AddJsonConsole();
 
-// Parameters
+// Parameters.
 var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"]?.ToString() ?? "";          // from Secrets.json ?? from appsettings.json
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
@@ -42,9 +42,8 @@ File.WriteAllBytes(builder.Configuration["Certificate:Path"], cert.Export(X509Co
 var keyCert = new X509SecurityKey(cert);
 var keys = new List<SecurityKey> { key, keyCert };
 
-// Add services to the container.
+// Add API services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddSwaggerGen(options =>
 {
     options.SupportNonNullableReferenceTypes();
@@ -74,6 +73,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+builder.Services.AddHealthChecks();
+
+// Add AuthZ and AuthN services.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -97,7 +99,9 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new MyAuthorizationRequirement()));
 });
-builder.Services.AddHealthChecks();
+
+// Add DB services
+builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add custom services to the container.
 builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();
