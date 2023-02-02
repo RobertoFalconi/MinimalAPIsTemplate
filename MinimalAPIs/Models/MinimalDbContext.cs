@@ -15,7 +15,7 @@ public partial class MinimalDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer("No connection string set for database.");
+            _ = optionsBuilder.UseSqlServer("No connection string set for database.");
         }
     }
 

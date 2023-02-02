@@ -1,21 +1,22 @@
 global using Hangfire;
 global using Hangfire.Common;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.IdentityModel.Tokens;
-global using MinimalAPIs.Services;
-global using System.IdentityModel.Tokens.Jwt;
-global using System.Security.Cryptography.X509Certificates;
-global using System.Text;
+global using Hangfire.Dashboard;
 global using Hangfire.MemoryStorage;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
+global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models;
-using System.Security.Cryptography;
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+global using MinimalAPIs.Services;
+global using System;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.IO;
+global using System.Security.Cryptography;
+global using System.Security.Cryptography.X509Certificates;
+global using System.Text;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -36,8 +37,6 @@ var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
 var rsa = RSA.Create();
 var req = new CertificateRequest("cn=foobar", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-var ecdsa = ECDsa.Create(); // generate asymmetric key pair
-var req2 = new CertificateRequest("cn=foobar", ecdsa, HashAlgorithmName.SHA256);
 var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
 File.WriteAllBytes(builder.Configuration["Certificate:Path"], cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var keyCert = new X509SecurityKey(cert);
@@ -94,10 +93,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         }
     };
 });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new MyAuthorizationRequirement()));
+});
 builder.Services.AddHealthChecks();
 
 // Add custom services to the container.
+builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();
 builder.Services.AddScoped<MyTokenHandler>();
 
 // Add third-parties services to the container.
@@ -116,20 +119,21 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 app.UseHsts();
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapHealthChecks("/Health");
-app.UseHangfireDashboard();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseDeveloperExceptionPage();
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
+    _ = app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new HangfireAuthorizationFilter() }
+    });
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    _ = app.UseExceptionHandler("/Error");
 }
 
 // Run the app.
