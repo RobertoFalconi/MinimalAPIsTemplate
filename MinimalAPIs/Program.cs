@@ -36,6 +36,8 @@ var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
 var rsa = RSA.Create();
 var req = new CertificateRequest("cn=foobar", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+var ecdsa = ECDsa.Create(); // generate asymmetric key pair
+var req2 = new CertificateRequest("cn=foobar", ecdsa, HashAlgorithmName.SHA256);
 var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
 File.WriteAllBytes(builder.Configuration["Certificate:Path"], cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var keyCert = new X509SecurityKey(cert);
