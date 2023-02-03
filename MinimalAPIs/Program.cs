@@ -11,6 +11,9 @@ global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;
+global using NLog.Web;
+global using NLog.Extensions.Logging;
+global using NLog;
 global using System;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO;
@@ -29,6 +32,8 @@ builder.Configuration
 
 // Add loggers to the container.
 builder.Logging.AddJsonConsole();
+builder.Logging.AddNLogWeb(new NLogLoggingConfiguration(builder.Configuration.GetSection("NLog")));
+LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 // Parameters.
 var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";          // from Secrets.json ?? from appsettings.json
