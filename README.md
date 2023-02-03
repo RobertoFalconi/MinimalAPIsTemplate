@@ -20,5 +20,28 @@ Other examples in this template:
 2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
 
+# How to generate a PFX certificate
+If you want to manually generate a .pfx file, you can use the following OpenSSL commands, then copy it to the Certificates folder of the project:  
+```
+openssl genrsa -aes256 -out sign-key.pem 2048  
+openssl req -new -x509 -sha256 -outform pem -key sign-key.pem -days 365 -out sign-cert.pem  
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem  
+```
+
+# How to generate a PFX certificate
+You can use the following T-SQL command to generate a table working with this NLog sample.  
+```
+CREATE TABLE [dbo].[NLog] (
+    [ID]        INT            IDENTITY (1, 1) NOT NULL,
+    [Logged]    DATETIME       NULL,
+    [Level]     NVARCHAR (MAX) NULL,
+    [Message]   NVARCHAR (MAX) NULL,
+    [Logger]    NVARCHAR (MAX) NULL,
+    [Callsite]  NVARCHAR (MAX) NULL,
+    [Exception] NVARCHAR (MAX) NULL,
+    PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+```
+
 # Sources and useful links
 1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
