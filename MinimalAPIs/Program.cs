@@ -9,7 +9,7 @@ global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.OpenApi.Models;
 global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
-global using MinimalAPIs.Models;
+global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;
 global using System;
 global using System.IdentityModel.Tokens.Jwt;
@@ -31,14 +31,14 @@ builder.Configuration
 builder.Logging.AddJsonConsole();
 
 // Parameters.
-var connectionString = builder.Configuration.GetConnectionString("connectionstring") ?? builder.Configuration["ConnectionString"]?.ToString() ?? "";          // from Secrets.json ?? from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";          // from Secrets.json ?? from appsettings.json
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
 var rsa = RSA.Create();
 var req = new CertificateRequest("cn=foobar", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
-File.WriteAllBytes(builder.Configuration["Certificate:Path"], cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
+File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var keyCert = new X509SecurityKey(cert);
 var keys = new List<SecurityKey> { key, keyCert };
 
@@ -101,7 +101,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Add DB services
-builder.Services.AddDbContext<MinimalDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
 
 // Add custom services to the container.
 builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();

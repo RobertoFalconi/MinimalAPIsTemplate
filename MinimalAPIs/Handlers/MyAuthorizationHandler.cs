@@ -7,7 +7,7 @@ public class MyAuthorizationHandler : AuthorizationHandler<MyAuthorizationRequir
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context, MyAuthorizationRequirement requirement)
     {
-        using (var dbContext = new MinimalDbContext())
+        using (var dbContext = new MinimalApisDbContext())
         {
             using var dbContextTransaction = await dbContext.Database.BeginTransactionAsync();
             // Add your authorization logic here.
