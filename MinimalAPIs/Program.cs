@@ -36,13 +36,11 @@ builder.Logging.AddNLogWeb(new NLogLoggingConfiguration(builder.Configuration.Ge
 LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 // Parameters.
-var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";          // from Secrets.json ?? from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
-var rsa = RSA.Create();
-var req = new CertificateRequest("cn=foobar", rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+var cert = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
 File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var keyCert = new X509SecurityKey(cert);
 var keys = new List<SecurityKey> { key, keyCert };
@@ -90,8 +88,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         RequireSignedTokens = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         IssuerSigningKeys = keys,
         TokenDecryptionKeys = new List<SecurityKey> { new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key },
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>

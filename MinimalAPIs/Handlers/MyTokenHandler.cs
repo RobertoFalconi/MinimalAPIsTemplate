@@ -43,7 +43,6 @@ public class MyTokenHandler
             logger.LogInformation("Inizio RecurringJob");
 
             var manager = new RecurringJobManager();
-            var service = new MyTokenService();
 
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
