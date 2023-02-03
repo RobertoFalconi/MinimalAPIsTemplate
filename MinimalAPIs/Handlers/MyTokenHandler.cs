@@ -56,5 +56,11 @@ public class MyTokenHandler
 
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
+
+        app.MapGet("/tryNLog", () =>
+        {
+            logger.LogCritical("This is a critical good sample");
+            return Results.Ok();
+        });
     }
 }
