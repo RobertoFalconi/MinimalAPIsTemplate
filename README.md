@@ -1,19 +1,19 @@
 # MinimalAPIsTemplate
 Complete and working ASP.NET Core Minimal APIs template, with OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
   
-Examples of implemented APIs ready to go:  
+AuthN and AuthZ examples ready to go:  
 - JWT unsigned and not encrypted for basic knowledge  
 - JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
 - JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
 - JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 using a symmetric key  
 - JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 using a X509 Certificate asymmetric key  
-- Login (authentication) test with one of the generated Bearer token  
+- Test API for Login, Authentication and Authorization with one of the generated Bearer token  
 
 Other examples in this template:  
 - Minimal APIs architecture pattern with Handlers, Endpoints, Authentication and Authorization  
-- Examples of asynchronous service calls with Dependency Injection (DI) and scoped services  
-- Examples of support to Docker, Entity Framework, Swashbuckle (OpenAPI Swagger), Hangfire, NLog  
+- Asynchronous Services calls with Dependency Injection (DI) and Scoped Services  
 - Examples of Hsts, Exception Handler, JSON Console, Health Checks and other services and middlewares  
+- Examples of support to Docker, Entity Framework, Swashbuckle (OpenAPI Swagger), Hangfire, NLog  
   
 # How to use
 1. Call a generate token method and copy the returned Bearer token *token*  
