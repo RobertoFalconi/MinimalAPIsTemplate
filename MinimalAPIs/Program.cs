@@ -20,6 +20,7 @@ global using System.IO;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
+global using System.Text.Json;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
