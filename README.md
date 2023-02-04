@@ -28,7 +28,7 @@ openssl req -new -x509 -sha256 -outform pem -key sign-key.pem -days 365 -out sig
 openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem  
 ```
 
-# How to generate a PFX certificate
+# How to generate NLog table  
 You can use the following T-SQL command to generate a table working with this NLog sample.  
 ```
 CREATE TABLE [dbo].[NLog] (
