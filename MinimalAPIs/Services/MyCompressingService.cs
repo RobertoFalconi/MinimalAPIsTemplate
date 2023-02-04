@@ -1,7 +1,4 @@
-﻿using System.IO.Compression;
-using System.Text;
-
-namespace MinimalAPIs.Services;
+﻿namespace MinimalAPIs.Services;
 
 public class MyCompressingService
 {
@@ -17,7 +14,7 @@ public class MyCompressingService
             compressedData = memoryStream.ToArray();
         }
 
-        string hexString = BitConverter.ToString(compressedData).Replace("-", "");
+        var hexString = BitConverter.ToString(compressedData).Replace("-", "");
 
         return hexString;
     }
@@ -25,7 +22,7 @@ public class MyCompressingService
     public async Task<string> Decompress(string compressedData)
     {
         byte[] decompressedData;
-        byte[] byteArray = Enumerable.Range(0, compressedData.Length)
+        var byteArray = Enumerable.Range(0, compressedData.Length)
                              .Where(x => x % 2 == 0)
                              .Select(x => Convert.ToByte(compressedData.Substring(x, 2), 16))
                              .ToArray();

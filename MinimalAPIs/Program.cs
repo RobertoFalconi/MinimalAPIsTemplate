@@ -11,16 +11,18 @@ global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;
-global using NLog.Web;
-global using NLog.Extensions.Logging;
 global using NLog;
+global using NLog.Extensions.Logging;
+global using NLog.Web;
 global using System;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO;
+global using System.IO.Compression;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json;
+
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -109,7 +111,7 @@ builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlSer
 
 // Add custom services to the container.
 builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();
-builder.Services.AddScoped<MyTokenHandler>();
+builder.Services.AddScoped<MyHandler>();
 
 // Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
@@ -121,7 +123,7 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyTokenHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
+    scope.ServiceProvider.GetService<MyHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
 }
 
 // Configure the HTTP request pipeline.

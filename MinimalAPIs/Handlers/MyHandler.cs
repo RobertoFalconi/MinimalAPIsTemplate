@@ -1,47 +1,65 @@
-﻿using System.IO.Compression;
-using System.Text;
+﻿namespace MinimalAPIs.Handlers;
 
-namespace MinimalAPIs.Handlers;
-
-public class MyTokenHandler
+public class MyHandler
 {
     public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey keyCert)
     {
         var logger = app.Logger;
 
-        _ = app.MapGet("/generateToken", async () =>
+        var tokenHandler = app.MapGroup("/token").WithTags("Token Service API");
+
+        var hangfireHandler = app.MapGroup("/hangfire").WithTags("Hangfire Service API");
+
+        var nlogHandler = app.MapGroup("/nlog").WithTags("NLog Service API");
+
+        var compressingHandler = app.MapGroup("/compressing").WithTags("Compressing Service API");
+
+        var summaries = new[]
+            {
+                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            };
+
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+            new WeatherForecast
+            (
+                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                Random.Shared.Next(-20, 55),
+                summaries[Random.Shared.Next(summaries.Length)]
+            )).ToArray();
+
+        _ = tokenHandler.MapGet("/generateToken", async () =>
         {
             var token = await new MyTokenService().GenerateToken();
             return token;
         });
 
-        _ = app.MapGet("/generateSignedToken", async () =>
+        _ = tokenHandler.MapGet("/generateSignedToken", async () =>
         {
             var token = await new MyTokenService().GenerateSignedToken(issuer, audience, key);
             return token;
         });
 
-        _ = app.MapGet("/generateSignedTokenFromCertificate", async () =>
+        _ = tokenHandler.MapGet("/generateSignedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, keyCert);
             return token;
         });
 
-        _ = app.MapGet("/generateEncryptedToken", async () =>
+        _ = tokenHandler.MapGet("/generateEncryptedToken", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, key);
             return token;
         });
 
-        _ = app.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+        _ = tokenHandler.MapGet("/generateEncryptedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, keyCert);
             return token;
         });
 
-        _ = app.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+        _ = tokenHandler.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-        _ = app.MapGet("/recurringTryToken", () =>
+        _ = hangfireHandler.MapGet("/recurringTryToken", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -50,7 +68,7 @@ public class MyTokenHandler
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
 
-        _ = app.MapGet("/RemoveRecurringJob", () =>
+        _ = hangfireHandler.MapGet("/RemoveRecurringJob", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -59,27 +77,14 @@ public class MyTokenHandler
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
 
-        _ = app.MapGet("/tryNLog", () =>
+        _ = nlogHandler.MapGet("/tryNLog", () =>
         {
             logger.LogCritical("This is a critical good sample");
             return Results.Ok();
         });
 
-        _ = app.MapGet("/tryCompression", async () =>
+        _ = compressingHandler.MapGet("/tryCompression", async () =>
         {
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                )).ToArray();
-
             var jsonToCompress = JsonSerializer.Serialize(forecast);
 
             var compressedData = await new MyCompressingService().Compress(jsonToCompress);
@@ -87,7 +92,7 @@ public class MyTokenHandler
             return compressedData;
         });
 
-        _ = app.MapGet("/tryDecompression", async (string compressedData) =>
+        _ = compressingHandler.MapGet("/tryDecompression", async (string compressedData) =>
         {
             var decompressedData = await new MyCompressingService().Decompress(compressedData);
 

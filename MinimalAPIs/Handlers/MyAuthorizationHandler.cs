@@ -4,8 +4,7 @@ public class MyAuthorizationRequirement : IAuthorizationRequirement { }
 
 public class MyAuthorizationHandler : AuthorizationHandler<MyAuthorizationRequirement>
 {
-    protected override async Task<Task> HandleRequirementAsync(
-        AuthorizationHandlerContext context, MyAuthorizationRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, MyAuthorizationRequirement requirement)
     {
         using (var dbContext = new MinimalApisDbContext())
         {
