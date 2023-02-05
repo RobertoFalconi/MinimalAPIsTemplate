@@ -1,5 +1,5 @@
 # MinimalAPIsTemplate
-Complete and working ASP.NET Core Minimal APIs template, with OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
+Complete and working ASP.NET Core Minimal APIs template, with lots of ready to go examples, including OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
 - Authentication with JWT, JWS and JWE  
