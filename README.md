@@ -55,3 +55,14 @@ CREATE TABLE [dbo].[NLog] (
 
 # Sources and useful links
 1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
+
+# FAQ
+### When sending a JWT (more properly a JWS) from microservice A to microservice B, should microservice A sign the token using its own public key, its own private key, microservice B's public key, or microservice B's private key?
+
+Microservice A should sign the token using its own private key. The digital signature is used to verify the integrity of the token and to prove that it was sent from a trustworthy source. When microservice A sends the JWT to B, it signs the token with its own private key to prove that it was sent by A and that the contents of the token have not been altered during transmission. Microservice B can then verify the signature using A's public key. This way, B can be sure that the token was sent by A and that the contents of the token have not been altered during transmission.
+
+### When sending a JWT (more properly a JWE) from microservice A to microservice B, should microservice A encrypt the token using its own public key, its own private key, microservice B's public key, or microservice B's private key?
+
+Microservice A should encrypt the token using microservice B's public key. Encryption is used to protect sensitive data inside the token during transmission from A to B. In an asymmetric encryption system, the public key is used to encrypt data and verify the signature, while the private key is used to decrypt data and sign the token. When microservice A sends the JWT to B, it should encrypt the token using B's public key so that only B, possessing the corresponding private key, can decrypt the sensitive data.
+
+In summary, microservice A should sign the JWT using its own private key, and microservice B should verify the signature using A's public key. Microservice A should encrypt the JWT using B's public key and only B, possessing the corresponding private key, will be able to decrypt the sensitive data.
