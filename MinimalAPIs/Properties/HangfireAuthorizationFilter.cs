@@ -1,4 +1,4 @@
-﻿namespace MinimalAPIs.Filters;
+﻿namespace MinimalAPIs.Properties;
 
 public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
 {

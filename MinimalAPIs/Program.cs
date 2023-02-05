@@ -10,17 +10,15 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
-global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models.DB;
+global using MinimalAPIs.Properties;
 global using MinimalAPIs.Services;
 global using NLog;
 global using NLog.Extensions.Logging;
 global using NLog.Web;
-global using System;
 global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
-global using System.IO;
 global using System.IO.Compression;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
@@ -112,9 +110,13 @@ builder.Services.AddAuthorization(options =>
 // Add DB services
 builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
 
+// Add performance booster services
+builder.Services.AddResponseCompression();
+builder.Services.AddRequestDecompression();
+
 // Add custom services to the container.
 builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();
-builder.Services.AddScoped<MyHandler>();
+builder.Services.AddScoped<MyEndpointHandler>();
 
 // Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
@@ -126,23 +128,25 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
+    scope.ServiceProvider.GetService<MyEndpointHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
 }
 
 // Configure the HTTP request pipeline.
+app.UseResponseCompression();
+app.UseRequestDecompression();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.MapHealthChecks("/Health");
+app.UseHangfireDashboard("/Hangfire/Dashboard", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     _ = app.UseDeveloperExceptionPage();
     _ = app.UseSwagger();
     _ = app.UseSwaggerUI();
-    _ = app.UseHangfireDashboard("/Hangfire", new DashboardOptions
-    {
-        Authorization = new[] { new HangfireAuthorizationFilter() }
-    });
 }
 else
 {

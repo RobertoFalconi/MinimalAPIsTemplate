@@ -1,6 +1,6 @@
 ﻿namespace MinimalAPIs.Handlers;
 
-public class MyHandler
+public class MyEndpointHandler
 {
     public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey keyCert)
     {
@@ -68,7 +68,7 @@ public class MyHandler
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
 
-        _ = hangfireHandler.MapGet("/RemoveRecurringJob", () =>
+        _ = hangfireHandler.MapGet("/removeRecurringJob", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -76,6 +76,24 @@ public class MyHandler
 
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
+
+        _ = hangfireHandler.MapGet("/recurringSampleJob", () =>
+        {
+            logger.LogInformation("Inizio RecurringJob");
+
+            var manager = new RecurringJobManager();
+
+            manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
+        });
+
+        _ = hangfireHandler.MapGet("/removeSampleJob", () =>
+        {
+            logger.LogInformation("Inizio RecurringJob");
+
+            var manager = new RecurringJobManager();
+
+            manager.RemoveIfExists("SampleJob");
+        });
 
         _ = nlogHandler.MapGet("/tryNLog", () =>
         {
