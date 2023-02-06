@@ -9,7 +9,7 @@ public static class HttpContextExtensions
     /// </summary>
     /// <param name="httpRequest">The <see cref="HttpRequest"/>.</param>
     /// <returns><c>true</c> if the <c>Accept</c> header contains a media type compatible with "application/json".</returns>
-    public static bool AcceptsJson(this HttpRequest httpRequest) => Accepts(httpRequest, _jsonMediaType);
+    public static bool AcceptsJson(this HttpRequest httpRequest) => httpRequest.Accepts(_jsonMediaType);
 
     /// <summary>
     /// Determines if the request accepts responses formatted as the specified media type via the <c>Accepts</c> header.
@@ -18,7 +18,7 @@ public static class HttpContextExtensions
     /// <param name="mediaType">The media type.</param>
     /// <returns><c>true</c> if the <c>Accept</c> header contains a compatible media type.</returns>
     public static bool Accepts(this HttpRequest httpRequest, string mediaType) =>
-        Accepts(httpRequest, new MediaTypeHeaderValue(mediaType));
+        httpRequest.Accepts(new MediaTypeHeaderValue(mediaType));
 
     /// <summary>
     /// Determines if the request accepts responses formatted as the specified media type via the <c>Accepts</c> header.

@@ -5,19 +5,17 @@ global using Hangfire.MemoryStorage;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
-global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
+global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models.DB;
-global using MinimalAPIs.Properties;
 global using MinimalAPIs.Services;
 global using NLog;
 global using NLog.Extensions.Logging;
 global using NLog.Web;
-global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
 global using System.Security.Claims;
@@ -47,7 +45,6 @@ var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
 var signingCertificate = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA512, RSASignaturePadding.Pss).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1));
 var encryptingCertificate = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA512, RSASignaturePadding.Pss).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1));
-//File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, signingCertificate.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var signingCertificateKey = new X509SecurityKey(signingCertificate);
 var encryptingCertificateKey = new X509SecurityKey(encryptingCertificate);
 var signingKeys = new List<SecurityKey> { symmetricKey, signingCertificateKey };
@@ -157,41 +154,15 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 else
 {
-    // Error handling.
+    // TODO: Error handling.
     _ = app.UseExceptionHandler(new ExceptionHandlerOptions
     {
         AllowStatusCode404Response = true,
         ExceptionHandler = async (HttpContext context) =>
         {
-            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
-
-            if (exceptionHandlerFeature?.Error is BadHttpRequestException badRequestEx)
-            {
-                context.Response.StatusCode = badRequestEx.StatusCode;
-            }
-
-            if (context.Request.AcceptsJson()
-                && context.RequestServices.GetRequiredService<IProblemDetailsService>() is { } problemDetailsService)
-            {
-                await problemDetailsService.WriteAsync(new()
-                {
-                    HttpContext = context,
-                    AdditionalMetadata = exceptionHandlerFeature?.Endpoint?.Metadata,
-                    ProblemDetails = { Status = context.Response.StatusCode }
-                });
-            }
-            else
-            {
-                context.Response.ContentType = "text/plain";
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                var message = ReasonPhrases.GetReasonPhrase(context.Response.StatusCode) switch
-                {
-                    { Length: > 0 } reasonPhrase => reasonPhrase,
-                    _ => "An error occurred"
-                };
-                await context.Response.WriteAsync(message + "\r\n");
-                await context.Response.WriteAsync($"Request ID: {Activity.Current?.Id ?? context.TraceIdentifier}");
-            }
+            var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            var res = Results.Json(data: error?.Message ?? "Si è verificato un errore durante l'esecuzione della richiesta.", statusCode: StatusCodes.Status400BadRequest);
+            await context.Response.WriteAsJsonAsync(res);
         }
     });
 }
