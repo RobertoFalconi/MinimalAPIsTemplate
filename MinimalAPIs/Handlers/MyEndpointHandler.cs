@@ -57,15 +57,21 @@ public class MyEndpointHandler
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateJOSE", async () =>
-        {
-            var token = await new MyTokenService().GenerateJOSE();
-            return token;
-        });
-
         _ = tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, keyCert);
+            return token;
+        });
+
+        _ = tokenHandler.MapGet("/generateEncryptedTokenNotSigned", async () =>
+        {
+            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, key, keyCert);
+            return token;
+        });
+
+        _ = tokenHandler.MapGet("/generateJOSERandomlySigned", async () =>
+        {
+            var token = await new MyTokenService().GenerateJOSERandomlySigned();
             return token;
         });
 

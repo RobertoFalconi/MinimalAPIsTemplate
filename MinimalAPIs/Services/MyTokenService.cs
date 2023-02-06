@@ -36,7 +36,24 @@ public class MyTokenService
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
-    public async Task<string> GenerateJOSE()
+    public async Task<string> GenerateJOSEFromCertificate(string issuer, string audience, X509SecurityKey asymmetricKey)
+    {
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
+            issuer: issuer, audience: audience, subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
+            signingCredentials: new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSsaPssSha512),
+            encryptingCredentials: new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
+
+        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+    }
+
+    public async Task<string> GenerateEncryptedTokenNotSigned(string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey asymmetricKey)
+    {
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer: issuer, audience: audience, subject: null, notBefore: null, expires:  null, issuedAt: null, signingCredentials: null, new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512));
+        token.Payload.AddClaim(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+    }
+
+    public async Task<string> GenerateJOSERandomlySigned()
     {
         var rsa = RSA.Create();
         var privateKey = rsa.ExportParameters(true);
@@ -50,13 +67,5 @@ public class MyTokenService
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
-    public async Task<string> GenerateJOSEFromCertificate(string issuer, string audience, X509SecurityKey asymmetricKey)
-    {
-        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
-            issuer: issuer, audience: audience, subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
-            signingCredentials: new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSsaPssSha512),
-            encryptingCredentials: new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
-
-        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
-    }
+    
 }
