@@ -9,6 +9,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Docker  
 - Entity Framework Core and LINQ  
 - Exception Handler 
+- GZip Stream Compression and Decompression  
 - Hangfire  
 - Health Checks  
 - HSTS and HTTPS Redirection  
