@@ -7,6 +7,7 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
@@ -17,9 +18,11 @@ global using MinimalAPIs.Services;
 global using NLog;
 global using NLog.Extensions.Logging;
 global using NLog.Web;
+global using System;
 global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
+global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
@@ -95,7 +98,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = issuer,
         ValidAudience = audience,
         IssuerSigningKeys = keys,
-        TokenDecryptionKeys = new List<SecurityKey> { new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key },
+        TokenDecryptionKeys = new List<SecurityKey>
+        {
+            new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
+            new EncryptingCredentials(keyCert, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512).Key
+        },
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
         {
             return keys;

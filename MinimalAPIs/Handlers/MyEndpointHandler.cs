@@ -65,7 +65,7 @@ public class MyEndpointHandler
 
         _ = tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
         {
-            var token = await new MyTokenService().GenerateJOSEFromCertificate(keyCert);
+            var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, keyCert);
             return token;
         });
 
