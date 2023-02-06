@@ -154,15 +154,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 else
 {
-    // TODO: Error handling.
+    // Error Handler.
     _ = app.UseExceptionHandler(new ExceptionHandlerOptions
     {
         AllowStatusCode404Response = true,
         ExceptionHandler = async (HttpContext context) =>
         {
             var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-            var res = Results.Json(data: error?.Message ?? "Si è verificato un errore durante l'esecuzione della richiesta.", statusCode: StatusCodes.Status400BadRequest);
-            await context.Response.WriteAsJsonAsync(res);
+            await context.Response.WriteAsJsonAsync(new { error = error?.Message ?? "Bad Request", statusCode = StatusCodes.Status400BadRequest });
         }
     });
 }
