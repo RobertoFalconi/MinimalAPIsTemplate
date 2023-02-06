@@ -44,8 +44,8 @@ public class MyTokenService
 
         var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
             issuer: "Issuer", audience: "Audience", subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
-            new SigningCredentials(new RsaSecurityKey(privateKey), SecurityAlgorithms.RsaSha256),
-            new EncryptingCredentials(new RsaSecurityKey(publicKey), SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
+            signingCredentials: new SigningCredentials(new RsaSecurityKey(privateKey), SecurityAlgorithms.RsaSha256),
+            encryptingCredentials: new EncryptingCredentials(new RsaSecurityKey(publicKey), SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
 
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
@@ -54,8 +54,8 @@ public class MyTokenService
     {
         var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
             issuer: issuer, audience: audience, subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
-            new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSha256),
-            new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
+            signingCredentials: new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSsaPssSha512),
+            encryptingCredentials: new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
 
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }

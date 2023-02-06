@@ -47,7 +47,7 @@ var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB"
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
-var cert = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+var cert = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA512, RSASignaturePadding.Pss).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
 File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, cert.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var keyCert = new X509SecurityKey(cert);
 var keys = new List<SecurityKey> { key, keyCert };
