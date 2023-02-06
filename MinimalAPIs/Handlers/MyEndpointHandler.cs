@@ -2,7 +2,7 @@
 
 public class MyEndpointHandler
 {
-    public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey keyCert)
+    public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey signingCertificateKey, X509SecurityKey encryptingCertificateKey)
     {
         var logger = app.Logger;
 
@@ -41,7 +41,7 @@ public class MyEndpointHandler
 
         _ = tokenHandler.MapGet("/generateSignedTokenFromCertificate", async () =>
         {
-            var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, keyCert);
+            var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
             return token;
         });
 
@@ -53,19 +53,19 @@ public class MyEndpointHandler
 
         _ = tokenHandler.MapGet("/generateEncryptedTokenFromCertificate", async () =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, keyCert);
+            var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, signingCertificateKey);
             return token;
         });
 
         _ = tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
         {
-            var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, keyCert);
+            var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
             return token;
         });
 
         _ = tokenHandler.MapGet("/generateEncryptedTokenNotSigned", async () =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, key, keyCert);
+            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, key, signingCertificateKey);
             return token;
         });
 

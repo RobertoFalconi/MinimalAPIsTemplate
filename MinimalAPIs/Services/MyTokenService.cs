@@ -36,12 +36,12 @@ public class MyTokenService
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
-    public async Task<string> GenerateJOSEFromCertificate(string issuer, string audience, X509SecurityKey asymmetricKey)
+    public async Task<string> GenerateJOSEFromCertificate(string issuer, string audience, X509SecurityKey asymmetricKey, X509SecurityKey encryptingCertificateKey)
     {
         var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
             issuer: issuer, audience: audience, subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
             signingCredentials: new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSsaPssSha512),
-            encryptingCredentials: new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
+            encryptingCredentials: new EncryptingCredentials(encryptingCertificateKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
 
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
@@ -66,6 +66,4 @@ public class MyTokenService
 
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
-
-    
 }

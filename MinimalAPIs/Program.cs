@@ -44,14 +44,15 @@ LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 // Parameters.
 var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
+var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
 var issuer = builder.Configuration["Jwt:Issuer"]!;
 var signingCertificate = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA512, RSASignaturePadding.Pss).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1));
 var encryptingCertificate = new CertificateRequest("cn=foobar", RSA.Create(), HashAlgorithmName.SHA512, RSASignaturePadding.Pss).CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddHours(1));
 //File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, signingCertificate.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
-var keyCert = new X509SecurityKey(signingCertificate);
-var keys = new List<SecurityKey> { key, keyCert };
+var signingCertificateKey = new X509SecurityKey(signingCertificate);
+var encryptingCertificateKey = new X509SecurityKey(encryptingCertificate);
+var keys = new List<SecurityKey> { symmetricKey, signingCertificateKey };
 
 // Add API services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -101,8 +102,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKeys = keys,
         TokenDecryptionKeys = new List<SecurityKey>
         {
-            new EncryptingCredentials(key, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
-            new EncryptingCredentials(keyCert, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512).Key
+            new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
+            new EncryptingCredentials(encryptingCertificateKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512).Key
         },
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
         {
@@ -136,7 +137,7 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyEndpointHandler>()?.RegisterAPIs(app, issuer, audience, key, keyCert);
+    scope.ServiceProvider.GetService<MyEndpointHandler>()?.RegisterAPIs(app, issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
 }
 
 // Configure the HTTP request pipeline.
