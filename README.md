@@ -2,18 +2,18 @@
 Complete and working ASP.NET Core Minimal APIs template, with lots of ready to go examples, including OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
-- Authentication with JWT, JWS and JWE  
-- Authorization with additional Policies using AuthorizationHandler  
 - Architecture pattern based on Minimal APIs with Endpoint Handlers  
 - Asynchronous Services calls with Dependency Injection (DI) and Scoped Services  
-- HSTS and HTTPS Redirection  
-- Exception Handler 
-- Health Checks  
+- Authentication with JWT, JWS, JWE and JOSE  
+- Authorization with additional Policies using AuthorizationHandler  
 - Docker  
-- NLog and JSON Console  
-- Hangfire  
-- OpenAPI Swagger with Swashbuckle  
 - Entity Framework Core and LINQ  
+- Exception Handler 
+- Hangfire  
+- Health Checks  
+- HSTS and HTTPS Redirection  
+- NLog and JSON Console  
+- OpenAPI Swagger with Swashbuckle  
 
 ## AuthN and AuthZ examples ready to go:  
 - JWT unsigned and not encrypted for basic knowledge  
@@ -21,6 +21,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
 - JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 using a symmetric key  
 - JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 using a X509 Certificate asymmetric key  
+- JOSE ("enc": "A256CBC-HS512", "alg": "RSA-OAEP") encrypted with RSA-OAEP using a X509 Certificate asymmetric key and signed with RSA-SSA-PSS-SHA512 using another X509 Certificate asymmetric key  
 - Test API for Login, Authentication and Authorization with one of the generated Bearer token  
   
 # How to use
@@ -55,6 +56,8 @@ CREATE TABLE [dbo].[NLog] (
 
 # Sources and useful links
 1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
+2. RFC 7520: Examples of Protecting Content Using JSON Object Signing and Encryption (JOSE) - https://www.rfc-editor.org/rfc/rfc7520.html
+2. RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2 - https://www.rfc-editor.org/rfc/rfc8017
 
 # FAQ
 ### When sending a JWT (more properly a JWS) from microservice A to microservice B, should microservice A sign the token using its own public key, its own private key, microservice B's public key, or microservice B's private key?
