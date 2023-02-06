@@ -7,7 +7,6 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
-global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
@@ -18,7 +17,6 @@ global using MinimalAPIs.Services;
 global using NLog;
 global using NLog.Extensions.Logging;
 global using NLog.Web;
-global using System;
 global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
@@ -52,7 +50,7 @@ var encryptingCertificate = new CertificateRequest("cn=foobar", RSA.Create(), Ha
 //File.WriteAllBytes(builder.Configuration["Certificate:Path"]!, signingCertificate.Export(X509ContentType.Pfx, builder.Configuration["Certificate:Password"]));
 var signingCertificateKey = new X509SecurityKey(signingCertificate);
 var encryptingCertificateKey = new X509SecurityKey(encryptingCertificate);
-var keys = new List<SecurityKey> { symmetricKey, signingCertificateKey };
+var signingKeys = new List<SecurityKey> { symmetricKey, signingCertificateKey };
 
 // Add API services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -99,7 +97,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         RequireSignedTokens = true,
         ValidIssuer = issuer,
         ValidAudience = audience,
-        IssuerSigningKeys = keys,
+        IssuerSigningKeys = signingKeys,
         TokenDecryptionKeys = new List<SecurityKey>
         {
             new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
@@ -107,7 +105,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         },
         IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
         {
-            return keys;
+            return signingKeys;
         }
     };
 });
@@ -116,10 +114,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new MyAuthorizationRequirement()));
 });
 
-// Add DB services
+// Add DB services.
 builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
 
-// Add performance booster services
+// Add performance booster services.
 builder.Services.AddResponseCompression();
 builder.Services.AddRequestDecompression();
 
@@ -159,7 +157,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 else
 {
-    // Error handling
+    // Error handling.
     _ = app.UseExceptionHandler(new ExceptionHandlerOptions
     {
         AllowStatusCode404Response = true,
