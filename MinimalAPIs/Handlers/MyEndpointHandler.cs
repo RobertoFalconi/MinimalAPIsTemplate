@@ -57,6 +57,18 @@ public class MyEndpointHandler
             return token;
         });
 
+        _ = tokenHandler.MapGet("/generateJOSE", async () =>
+        {
+            var token = await new MyTokenService().GenerateJOSE();
+            return token;
+        });
+
+        _ = tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
+        {
+            var token = await new MyTokenService().GenerateJOSEFromCertificate(keyCert);
+            return token;
+        });
+
         _ = tokenHandler.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
         _ = hangfireHandler.MapGet("/recurringTryToken", () =>

@@ -1,4 +1,11 @@
 ﻿using System.Security.Claims;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MinimalAPIs.Services;
 
@@ -38,24 +45,27 @@ public class MyTokenService
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
-    // TODO: Il parametro "alg" è uguale a "ES256"; Il parametro "enc" è uguale a "AES-GCM"
     public async Task<string> GenerateJOSE()
     {
-        var header = new JwtHeader(new SigningCredentials(new ECDsaSecurityKey(ECDsa.Create()), SecurityAlgorithms.EcdsaSha256));
-        var payload = new JwtPayload(issuer: "Issuer", audience: "Audience", claims: new List<Claim> { new Claim(ClaimTypes.Name, "UserName") }, notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30));
-        var encryptedJwt = new JwtSecurityToken(header, payload);
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret key"));
+        var rsa = RSA.Create();
+        var privateKey = rsa.ExportParameters(true);
+        var publicKey = rsa.ExportParameters(false);
 
-        // Define the encryption algorithm and key
-        var encryptionAlgorithm = SecurityAlgorithms.Aes256Gcm;
-        var encryptingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret key"));
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
+            issuer: "Issuer", audience: "Audience", subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
+            new SigningCredentials(new RsaSecurityKey(privateKey), SecurityAlgorithms.RsaSha256),
+            new EncryptingCredentials(new RsaSecurityKey(publicKey), SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
 
-        // Encrypt the JWT
-        var encryptedToken = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer: "Issuer", audience: "Audience", new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now, new SigningCredentials(new ECDsaSecurityKey(ECDsa.Create()), SecurityAlgorithms.EcdsaSha256));
+        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+    }
 
-        // Serialize the token to a string
-        var token = new JwtSecurityTokenHandler().WriteToken(encryptedToken);
+    public async Task<string> GenerateJOSEFromCertificate(X509SecurityKey asymmetricKey)
+    {
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(
+            issuer: "Issuer", audience: "Audience", subject: new ClaimsIdentity(), notBefore: DateTime.Now, expires: DateTime.Now.AddMinutes(30), issuedAt: DateTime.Now,
+            new SigningCredentials(asymmetricKey, SecurityAlgorithms.RsaSha256),
+            new EncryptingCredentials(asymmetricKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512));
 
-        return token;
+        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 }
