@@ -134,6 +134,20 @@ public class MyEndpointHandler
 
             return decompressedData;
         });
+
+        _ = nlogHandler.MapGet("/getLogsWithLINQ", async () =>
+        {
+            List<Nlog> logs;
+            using (var context = new MinimalApisDbContext())
+            {
+                using var dbContextTransaction = await context.Database.BeginTransactionAsync();
+                logs = await (from l in context.Nlog
+                              where true
+                              select l).ToListAsync();
+            }
+
+            return logs;
+        });
     }
 }
 

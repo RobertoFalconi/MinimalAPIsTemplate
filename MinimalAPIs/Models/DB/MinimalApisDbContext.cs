@@ -18,7 +18,22 @@ public partial class MinimalApisDbContext : DbContext
     public virtual DbSet<Nlog> Nlog { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:MinimalAPIsDB");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+                .AddEnvironmentVariables();
+
+            IConfiguration config = builder.Build();
+
+            string connstring = config.GetConnectionString("MinimalAPIsDB")!;
+
+            optionsBuilder.UseSqlServer(connstring);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
