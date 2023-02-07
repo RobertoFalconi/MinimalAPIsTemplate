@@ -48,7 +48,7 @@ public class MyTokenService
 
     public async Task<string> GenerateEncryptedTokenNotSigned(string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey asymmetricKey)
     {
-        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer: issuer, audience: audience, subject: null, notBefore: null, expires:  null, issuedAt: null, signingCredentials: null, new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512));
+        var token = new JwtSecurityTokenHandler().CreateJwtSecurityToken(issuer: issuer, audience: audience, subject: null, notBefore: null, expires: null, issuedAt: null, signingCredentials: null, new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512));
         token.Payload.AddClaim(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
         return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }

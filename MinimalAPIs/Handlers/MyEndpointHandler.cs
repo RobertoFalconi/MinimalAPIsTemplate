@@ -135,23 +135,58 @@ public class MyEndpointHandler
             return decompressedData;
         });
 
-        _ = nlogHandler.MapGet("/getLogsWithLINQ", async () =>
+        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async () =>
         {
+            var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
+            var param = 1;
+
             using (var context = new MinimalApisDbContext())
             {
                 using var dbContextTransaction = await context.Database.BeginTransactionAsync();
                 logs = await (from l in context.Nlog
-                              where true
+                              where param == 1
                               select l).ToListAsync();
             }
 
-            return logs;
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+            return new { elapsedTime, logs };
+        });
+
+        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndSql", () =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var param = 1;
+
+            using var dbContext = new MinimalApisDbContext();
+            var logs = dbContext.Nlog.FromSqlInterpolated($"SELECT * FROM NLog WHERE 1 = {param} ").ToList();
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+            return new { elapsedTime, logs };
+        });
+
+        _ = nlogHandler.MapGet("/getLogsWithDapperAndSqlClient", async () =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            using var connection = new SqlConnection(app.Configuration.GetConnectionString("MinimalAPIsDB"));
+            await connection.OpenAsync();
+            var logs = (await connection.QueryAsync<Nlog>("SELECT * FROM NLog WHERE 1 = @param ",
+                new { param = (int?)1 })).ToList();
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+            return new { elapsedTime, logs };
         });
     }
 }
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public int TemperatureF
+    {
+        get => 32 + (int)(TemperatureC / 0.5556);
+    }
 }

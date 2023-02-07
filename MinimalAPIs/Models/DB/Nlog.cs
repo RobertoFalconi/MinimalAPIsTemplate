@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MinimalAPIs.Models.DB;
+﻿namespace MinimalAPIs.Models.DB;
 
 public partial class Nlog
 {
