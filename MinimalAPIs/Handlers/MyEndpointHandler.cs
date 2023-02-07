@@ -187,6 +187,9 @@ internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary
 {
     public int TemperatureF
     {
-        get => 32 + (int)(TemperatureC / 0.5556);
+        get
+        {
+            return 32 + (int)(TemperatureC / 0.5556);
+        }
     }
 }

@@ -103,16 +103,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             new EncryptingCredentials(symmetricKey, JwtConstants.DirectKeyUseAlg, SecurityAlgorithms.Aes256CbcHmacSha512).Key,
             new EncryptingCredentials(encryptingCertificateKey, SecurityAlgorithms.RsaOAEP, SecurityAlgorithms.Aes256CbcHmacSha512).Key
         },
-        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) =>
-        {
-            return signingKeys;
-        }
+        IssuerSigningKeyResolver = (token, securityToken, kid, validationParameters) => signingKeys
     };
 });
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new AuthorizationRequirement()));
-});
+builder.Services.AddAuthorization(options => options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new AuthorizationRequirement())));
 
 // Add DB services.
 builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));

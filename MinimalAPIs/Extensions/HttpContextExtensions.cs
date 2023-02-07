@@ -34,13 +34,17 @@ public static class HttpContextExtensions
     public static bool Accepts(this HttpRequest httpRequest, MediaTypeHeaderValue mediaType)
     {
         if (httpRequest.GetTypedHeaders().Accept is { Count: > 0 } acceptHeader)
+        {
             for (var i = 0; i < acceptHeader.Count; i++)
             {
                 var acceptHeaderValue = acceptHeader[i];
 
                 if (mediaType.IsSubsetOf(acceptHeaderValue))
+                {
                     return true;
+                }
             }
+        }
 
         return false;
     }
