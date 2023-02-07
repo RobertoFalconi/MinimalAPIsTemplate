@@ -2,20 +2,21 @@
 Complete and working ASP.NET Core Minimal APIs template, with lots of ready to go examples, including OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
-- Architecture pattern based on Minimal APIs with Endpoint Handlers  
-- Asynchronous Services calls with Dependency Injection (DI) and Scoped Services  
+- Architecture based on Minimal APIs pattern with Endpoint Handlers  
+- Asynchronous Service calls with Dependency Injection (DI) and Scoped Services  
 - Authentication with JWT, JWS, JWE and JOSE  
 - Authorization with additional policies using Authorization Handler  
 - Dapper  
 - Docker  
 - Entity Framework Core and LINQ  
-- Exception Handler and error handling
+- Exception Handler and error handling  
 - GZipStream compression and decompression  
 - Hangfire  
 - Health Checks  
 - HSTS and HTTPS redirection  
 - NLog and JSON console  
 - OpenAPI Swagger with Swashbuckle  
+- StopWatch  
 
 ## AuthN and AuthZ examples ready to go:  
 - JWT unsigned and not encrypted for basic knowledge  
@@ -57,9 +58,10 @@ CREATE TABLE [dbo].[NLog] (
 ```
 
 # Sources and useful links
-1. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
-2. RFC 7520: Examples of Protecting Content Using JSON Object Signing and Encryption (JOSE) - https://www.rfc-editor.org/rfc/rfc7520.html
-2. RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2 - https://www.rfc-editor.org/rfc/rfc8017
+1. RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format - https://www.rfc-editor.org/rfc/rfc8259
+2. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
+3. RFC 7520: Examples of Protecting Content Using JSON Object Signing and Encryption (JOSE) - https://www.rfc-editor.org/rfc/rfc7520.html
+4. RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2 - https://www.rfc-editor.org/rfc/rfc8017
 
 # FAQ
 ### When sending a JWT (more properly a JWS) from microservice A to microservice B, should microservice A sign the token using its own public key, its own private key, microservice B's public key, or microservice B's private key?
