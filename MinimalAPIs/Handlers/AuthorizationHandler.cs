@@ -1,10 +1,10 @@
 ﻿namespace MinimalAPIs.Handlers;
 
-public class MyAuthorizationRequirement : IAuthorizationRequirement { }
+public class AuthorizationRequirement : IAuthorizationRequirement { }
 
-public class MyAuthorizationHandler : AuthorizationHandler<MyAuthorizationRequirement>
+public class AuthorizationHandler : AuthorizationHandler<AuthorizationRequirement>
 {
-    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, MyAuthorizationRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, AuthorizationRequirement requirement)
     {
         using (var dbContext = new MinimalApisDbContext())
         {

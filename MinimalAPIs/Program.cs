@@ -108,7 +108,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new MyAuthorizationRequirement()));
+    options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new AuthorizationRequirement()));
 });
 
 // Add DB services.
@@ -119,7 +119,7 @@ builder.Services.AddResponseCompression();
 builder.Services.AddRequestDecompression();
 
 // Add custom services to the container.
-builder.Services.AddScoped<IAuthorizationHandler, MyAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
 builder.Services.AddScoped<MyEndpointHandler>();
 
 // Add third-parties services to the container.
