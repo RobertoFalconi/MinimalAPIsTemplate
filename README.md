@@ -5,15 +5,16 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Architecture pattern based on Minimal APIs with Endpoint Handlers  
 - Asynchronous Services calls with Dependency Injection (DI) and Scoped Services  
 - Authentication with JWT, JWS, JWE and JOSE  
-- Authorization with additional Policies using AuthorizationHandler  
+- Authorization with additional policies using Authorization Handler  
+- Dapper  
 - Docker  
 - Entity Framework Core and LINQ  
-- Exception Handler 
-- GZip Stream Compression and Decompression  
+- Exception Handler and error handling
+- GZipStream compression and decompression  
 - Hangfire  
 - Health Checks  
-- HSTS and HTTPS Redirection  
-- NLog and JSON Console  
+- HSTS and HTTPS redirection  
+- NLog and JSON console  
 - OpenAPI Swagger with Swashbuckle  
 
 ## AuthN and AuthZ examples ready to go:  
