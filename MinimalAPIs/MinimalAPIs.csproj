@@ -23,6 +23,7 @@
 		<PackageReference Include="Hangfire.Core" Version="1.7.32" />
 		<PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
 			<PrivateAssets>all</PrivateAssets>

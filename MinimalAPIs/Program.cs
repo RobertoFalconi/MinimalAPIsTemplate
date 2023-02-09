@@ -110,6 +110,7 @@ builder.Services.AddAuthorization(options => options.AddPolicy("IsAuthorized", p
 
 // Add DB services.
 builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add performance booster services.
 builder.Services.AddResponseCompression();
@@ -122,6 +123,11 @@ builder.Services.AddScoped<MyEndpointHandler>();
 // Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
 JobStorage.Current = new MemoryStorage();
+
+if (builder.Environment.IsDevelopment())
+{
+    // Move services you want to use in development only here.
+}
 
 // Add the app to the container.
 var app = builder.Build();
@@ -145,14 +151,15 @@ app.UseHangfireDashboard("/Hangfire/Dashboard", new DashboardOptions
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
-    _ = app.UseDeveloperExceptionPage();
-    _ = app.UseSwagger();
-    _ = app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
     // Error Handler.
-    _ = app.UseExceptionHandler(new ExceptionHandlerOptions
+    app.UseExceptionHandler(new ExceptionHandlerOptions
     {
         AllowStatusCode404Response = true,
         ExceptionHandler = async (HttpContext context) =>
