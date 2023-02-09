@@ -10,7 +10,7 @@ public class MyEndpointHandler
 
         var hangfireHandler = app.MapGroup("/hangfire").WithTags("Hangfire Service API");
 
-        var nlogHandler = app.MapGroup("/nlog").WithTags("NLog Service API");
+        var nlogHandler = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper Services API");
 
         var compressingHandler = app.MapGroup("/compressing").WithTags("Compressing Service API");
 
@@ -135,18 +135,19 @@ public class MyEndpointHandler
             return decompressedData;
         });
 
-        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async () =>
+        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize) =>
         {
             var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
             var param = 1;
-
+            page = page > 0 ? page : 1;
+            pageSize = pageSize > 0 ? pageSize : 1;
             using (var context = new MinimalApisDbContext())
             {
                 using var dbContextTransaction = await context.Database.BeginTransactionAsync();
                 logs = await (from l in context.Nlog
                               where param == 1
-                              select l).ToListAsync();
+                              select l).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             }
 
             stopwatch.Stop();
