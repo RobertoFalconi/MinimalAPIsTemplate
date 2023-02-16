@@ -8,6 +8,8 @@
 		<UserSecretsId>e3b4018f-53ef-4a3c-b3aa-06780471a989</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<IsPackable>true</IsPackable>
+		<PackageId>Fucu.MinimalAPIsTemplate</PackageId>
+		<PackageType>Template</PackageType>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Description>Complete and working ASP.NET Core Minimal APIs template</Description>
