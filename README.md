@@ -12,8 +12,9 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Exception Handler and error handling  
 - GZipStream compression and decompression  
 - Hangfire  
-- Health Checks  
+- HealthChecks health monitoring  
 - HSTS and HTTPS redirection  
+- Multiple environments usage  
 - NLog and JSON console  
 - OpenAPI Swagger with Swashbuckle  
 - StopWatch  
