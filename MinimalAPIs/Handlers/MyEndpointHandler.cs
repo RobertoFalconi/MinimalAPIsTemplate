@@ -14,6 +14,8 @@ public class MyEndpointHandler
 
         var compressingHandler = app.MapGroup("/compressing").WithTags("Compressing Service API");
 
+        var httpClientHandler = app.MapGroup("/httpClient").WithTags("HTTP client to call another REST API");
+
         var summaries = new[]
             {
                 "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -181,6 +183,21 @@ public class MyEndpointHandler
             var elapsedTime = stopwatch.Elapsed;
             return new { elapsedTime, logs };
         });
+
+        _ = httpClientHandler.MapGet("/getAnotherEndpoint", async (HttpContext context) =>
+        {
+            var request = context?.Request;
+            var baseUrl = $"{request?.Scheme}://{request?.Host}{request?.PathBase}{request?.QueryString}";
+            baseUrl = baseUrl.Last().ToString() != "/" ? baseUrl.TrimEnd('/') : baseUrl;
+
+            var client = new HttpClient();
+            return await client.GetStringAsync(requestUri: $"{baseUrl}/httpClient/getThisEndpoint/");
+        });
+
+        _ = httpClientHandler.MapGet("/getThisEndpoint", async () =>
+        {
+            return Results.Ok("This is the response from httpClient/getThisEndpoint !");
+        }).ExcludeFromDescription();
     }
 }
 
