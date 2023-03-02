@@ -154,7 +154,7 @@ public class MyEndpointHandler
 
             stopwatch.Stop();
             var elapsedTime = stopwatch.Elapsed;
-            return new { elapsedTime, logs };
+            return Results.Ok(new { elapsedTime, logs });
         });
 
         _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndSql", () =>
@@ -167,7 +167,7 @@ public class MyEndpointHandler
 
             stopwatch.Stop();
             var elapsedTime = stopwatch.Elapsed;
-            return new { elapsedTime, logs };
+            return Results.Ok(new { elapsedTime, logs });
         });
 
         _ = nlogHandler.MapGet("/getLogsWithDapperAndSqlClient", async () =>
@@ -181,7 +181,7 @@ public class MyEndpointHandler
 
             stopwatch.Stop();
             var elapsedTime = stopwatch.Elapsed;
-            return new { elapsedTime, logs };
+            return Results.Ok(new { elapsedTime, logs });
         });
 
         _ = httpClientHandler.MapGet("/getAnotherEndpoint", async (HttpContext context) =>
@@ -191,13 +191,15 @@ public class MyEndpointHandler
             baseUrl = baseUrl.Last().ToString() != "/" ? baseUrl.TrimEnd('/') : baseUrl;
 
             var client = new HttpClient();
-            return await client.GetStringAsync(requestUri: $"{baseUrl}/httpClient/getThisEndpoint/");
+            using var response = await client.GetAsync(new Uri(baseUrl + "/httpClient/getThisEndpoint/"), HttpCompletionOption.ResponseHeadersRead);
+            _ = response.EnsureSuccessStatusCode();
+
+            return response.Content.Headers.ContentType?.MediaType == System.Net.Mime.MediaTypeNames.Application.Json
+                ? await response.Content.ReadFromJsonAsync<dynamic>()
+                : await response.Content.ReadAsStringAsync();
         });
 
-        _ = httpClientHandler.MapGet("/getThisEndpoint", async () =>
-        {
-            return Results.Ok("This is the response from httpClient/getThisEndpoint !");
-        }).ExcludeFromDescription();
+        _ = httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
     }
 }
 
