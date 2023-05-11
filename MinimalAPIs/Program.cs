@@ -2,7 +2,7 @@ global using Dapper;
 global using Hangfire;
 global using Hangfire.Common;
 global using Hangfire.Dashboard;
-global using Hangfire.MemoryStorage;
+global using Hangfire.SqlServer;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
@@ -121,8 +121,19 @@ builder.Services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
 builder.Services.AddScoped<MyEndpointHandler>();
 
 // Add third-parties services to the container.
-builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage()).AddHangfireServer();
-JobStorage.Current = new MemoryStorage();
+builder.Services.AddHangfire(configuration => configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            }));
+builder.Services.AddHangfireServer();
 
 if (builder.Environment.IsDevelopment())
 {
