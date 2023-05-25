@@ -40,8 +40,10 @@ builder.Configuration
 builder.Logging.AddJsonConsole();
 builder.Logging.AddNLogWeb(new NLogLoggingConfiguration(builder.Configuration.GetSection("NLog")));
 LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+var logger = LoggerFactory.Create(builder => builder.AddNLog().AddJsonConsole()).CreateLogger<Program>();
+logger.LogInformation("So it begins");
 
-// Parameters.
+// Add parameters to the container.
 var connectionString = builder.Configuration.GetConnectionString("MinimalAPIsDB") ?? "";
 var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!));
 var audience = builder.Configuration["Jwt:Audience"]!;
