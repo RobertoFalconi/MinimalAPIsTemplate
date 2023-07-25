@@ -115,6 +115,7 @@ builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlSer
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add performance booster services.
+builder.Services.AddHttpClient();
 builder.Services.AddResponseCompression();
 builder.Services.AddRequestDecompression();
 

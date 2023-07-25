@@ -17,6 +17,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Multiple environments usage  
 - NLog and JSON console  
 - OpenAPI Swagger with Swashbuckle  
+- Pool HTTP connections with HttpClientFactory
 - StopWatch  
 
 ## AuthN and AuthZ examples ready to go:  

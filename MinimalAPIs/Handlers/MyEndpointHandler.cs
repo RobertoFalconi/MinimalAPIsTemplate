@@ -1,4 +1,7 @@
-﻿namespace MinimalAPIs.Handlers;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MinimalAPIs.Handlers;
 
 public class MyEndpointHandler
 {
@@ -198,6 +201,33 @@ public class MyEndpointHandler
                 ? await response.Content.ReadFromJsonAsync<dynamic>()
                 : await response.Content.ReadAsStringAsync();
         });
+
+        _ = httpClientHandler.MapGet("/getAnotherEndpointOptimized", async (HttpContext context) =>
+        {
+            var request = context.Request;
+            var baseUrl = UriHelper.BuildAbsolute(request.Scheme, request.Host, request.PathBase, null, request.QueryString);
+
+            var client = context.RequestServices.GetRequiredService<IHttpClientFactory>().CreateClient();
+            using var response = await client.GetAsync(baseUrl + "httpClient/getThisEndpoint/", HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content.Headers.ContentType?.MediaType == System.Net.Mime.MediaTypeNames.Application.Json
+                    ? await response.Content.ReadFromJsonAsync<dynamic>()
+                    : await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var problem = new ProblemDetails
+                {
+                    Status = (int)response.StatusCode,
+                    Title = response.ReasonPhrase,
+                    Detail = await response.Content.ReadAsStringAsync()
+                };
+                return Results.Problem(problem);
+            }
+        });
+
 
         _ = httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
     }
