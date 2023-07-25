@@ -160,25 +160,11 @@ public class MyEndpointHandler
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndSql", () =>
-        {
-            var stopwatch = Stopwatch.StartNew();
-            var param = 1;
-
-            using var dbContext = new MinimalApisDbContext();
-            var logs = dbContext.Nlog.FromSqlInterpolated($"SELECT * FROM NLog WHERE 1 = {param} ").ToList();
-
-            stopwatch.Stop();
-            var elapsedTime = stopwatch.Elapsed;
-            return Results.Ok(new { elapsedTime, logs });
-        });
-
-        _ = nlogHandler.MapGet("/getLogsWithDapperAndSqlClient", async () =>
+        _ = nlogHandler.MapGet("/getLogsWithDapperAndSql", async () =>
         {
             var stopwatch = Stopwatch.StartNew();
 
             using var connection = new SqlConnection(app.Configuration.GetConnectionString("MinimalAPIsDB"));
-            await connection.OpenAsync();
             var logs = (await connection.QueryAsync<Nlog>("SELECT * FROM NLog WHERE 1 = @param ",
                 new { param = (int?)1 })).ToList();
 
