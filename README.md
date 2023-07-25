@@ -6,12 +6,12 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Asynchronous Service calls with Dependency Injection (DI) and Scoped Services  
 - Authentication with JWT, JWS, JWE and JOSE  
 - Authorization with additional policies using Authorization Handler  
-- Dapper  
-- Docker  
-- Entity Framework Core and LINQ  
+- Dapper ORM for mapping from SQL to objects and viceversa  
+- Docker container deployment  
+- Entity Framework Core and LINQ for mapping SQL to objects and viceversa  
 - Exception Handler and error handling  
 - GZipStream compression and decompression  
-- Hangfire  
+- Hangfire batch and job automations  
 - HealthChecks health monitoring  
 - HSTS and HTTPS redirection  
 - Multiple environments usage  
