@@ -6,6 +6,8 @@ global using Hangfire.SqlServer;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
+global using Microsoft.AspNetCore.Http.Extensions;
+global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
@@ -26,6 +28,7 @@ global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json;
+
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -111,7 +114,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization(options => options.AddPolicy("IsAuthorized", policy => policy.Requirements.Add(new AuthorizationRequirement())));
 
 // Add DB services.
-builder.Services.AddDbContext<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContextFactory<MinimalApisDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add performance booster services.
@@ -149,7 +152,7 @@ var app = builder.Build();
 // Map the endpoints.
 using (var scope = app.Services.CreateScope())
 {
-    scope.ServiceProvider.GetService<MyEndpointHandler>()?.RegisterAPIs(app, issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
+    scope.ServiceProvider.GetRequiredService<MyEndpointHandler>().RegisterAPIs(app, issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
 }
 
 // Configure the HTTP request pipeline.

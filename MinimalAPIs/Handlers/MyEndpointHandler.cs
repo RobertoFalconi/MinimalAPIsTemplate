@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
-
-namespace MinimalAPIs.Handlers;
+﻿namespace MinimalAPIs.Handlers;
 
 public class MyEndpointHandler
 {
@@ -32,57 +29,57 @@ public class MyEndpointHandler
                 summaries[Random.Shared.Next(summaries.Length)]
             )).ToArray();
 
-        _ = tokenHandler.MapGet("/generateToken", async () =>
+        tokenHandler.MapGet("/generateToken", async () =>
         {
             var token = await new MyTokenService().GenerateToken();
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateSignedToken", async () =>
+        tokenHandler.MapGet("/generateSignedToken", async () =>
         {
             var token = await new MyTokenService().GenerateSignedToken(issuer, audience, key);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateSignedTokenFromCertificate", async () =>
+        tokenHandler.MapGet("/generateSignedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateEncryptedToken", async () =>
+        tokenHandler.MapGet("/generateEncryptedToken", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, key);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+        tokenHandler.MapGet("/generateEncryptedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, signingCertificateKey);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
+        tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateEncryptedTokenNotSigned", async () =>
+        tokenHandler.MapGet("/generateEncryptedTokenNotSigned", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, key, signingCertificateKey);
             return token;
         });
 
-        _ = tokenHandler.MapGet("/generateJOSERandomlySigned", async () =>
+        tokenHandler.MapGet("/generateJOSERandomlySigned", async () =>
         {
             var token = await new MyTokenService().GenerateJOSERandomlySigned();
             return token;
         });
 
-        _ = tokenHandler.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+        tokenHandler.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-        _ = hangfireHandler.MapGet("/recurringTryToken", () =>
+        hangfireHandler.MapGet("/recurringTryToken", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -91,7 +88,7 @@ public class MyEndpointHandler
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
 
-        _ = hangfireHandler.MapGet("/removeRecurringJob", () =>
+        hangfireHandler.MapGet("/removeRecurringJob", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -100,7 +97,7 @@ public class MyEndpointHandler
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
 
-        _ = hangfireHandler.MapGet("/recurringSampleJob", () =>
+        hangfireHandler.MapGet("/recurringSampleJob", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -109,7 +106,7 @@ public class MyEndpointHandler
             manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         });
 
-        _ = hangfireHandler.MapGet("/removeSampleJob", () =>
+        hangfireHandler.MapGet("/removeSampleJob", () =>
         {
             logger.LogInformation("Inizio RecurringJob");
 
@@ -118,13 +115,13 @@ public class MyEndpointHandler
             manager.RemoveIfExists("SampleJob");
         });
 
-        _ = nlogHandler.MapGet("/tryNLog", () =>
+        nlogHandler.MapGet("/tryNLog", () =>
         {
             logger.LogCritical("This is a critical good sample");
             return Results.Ok();
         });
 
-        _ = compressingHandler.MapGet("/tryCompression", async () =>
+        compressingHandler.MapGet("/tryCompression", async () =>
         {
             var jsonToCompress = JsonSerializer.Serialize(forecast);
 
@@ -133,25 +130,22 @@ public class MyEndpointHandler
             return compressedData;
         });
 
-        _ = compressingHandler.MapGet("/tryDecompression", async (string compressedData) =>
+        compressingHandler.MapGet("/tryDecompression", async (string compressedData) =>
         {
             var decompressedData = await new MyCompressingService().Decompress(compressedData);
-
             return decompressedData;
         });
 
-        _ = nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize) =>
+        nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory <MinimalApisDbContext> dbContextFactory) =>
         {
             var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
-            var param = 1;
             page = page > 0 ? page : 1;
             pageSize = pageSize > 0 ? pageSize : 1;
-            using (var context = new MinimalApisDbContext())
+            using (var context = await dbContextFactory.CreateDbContextAsync())
             {
                 using var dbContextTransaction = await context.Database.BeginTransactionAsync();
                 logs = await (from l in context.Nlog
-                              where param == 1
                               select l).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             }
 
@@ -160,7 +154,7 @@ public class MyEndpointHandler
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        _ = nlogHandler.MapGet("/getLogsWithDapperAndSql", async () =>
+        nlogHandler.MapGet("/getLogsWithDapperAndSql", async () =>
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -173,7 +167,7 @@ public class MyEndpointHandler
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        _ = httpClientHandler.MapGet("/getAnotherEndpoint", async (HttpContext context) =>
+        httpClientHandler.MapGet("/getAnotherEndpoint", async (HttpContext context) =>
         {
             var request = context?.Request;
             var baseUrl = $"{request?.Scheme}://{request?.Host}{request?.PathBase}{request?.QueryString}";
@@ -181,14 +175,14 @@ public class MyEndpointHandler
 
             var client = new HttpClient();
             using var response = await client.GetAsync(new Uri(baseUrl + "/httpClient/getThisEndpoint/"), HttpCompletionOption.ResponseHeadersRead);
-            _ = response.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
             return response.Content.Headers.ContentType?.MediaType == System.Net.Mime.MediaTypeNames.Application.Json
                 ? await response.Content.ReadFromJsonAsync<dynamic>()
                 : await response.Content.ReadAsStringAsync();
         });
 
-        _ = httpClientHandler.MapGet("/getAnotherEndpointOptimized", async (HttpContext context) =>
+        httpClientHandler.MapGet("/getAnotherEndpointOptimized", async (HttpContext context) =>
         {
             var request = context.Request;
             var baseUrl = UriHelper.BuildAbsolute(request.Scheme, request.Host, request.PathBase, null, request.QueryString);
@@ -215,7 +209,7 @@ public class MyEndpointHandler
         });
 
 
-        _ = httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
+        httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
     }
 }
 

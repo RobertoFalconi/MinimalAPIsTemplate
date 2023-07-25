@@ -8,7 +8,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Authorization with additional policies using Authorization Handler  
 - Dapper ORM for mapping from SQL to objects and viceversa  
 - Docker container deployment  
-- Entity Framework Core and LINQ for mapping SQL to objects and viceversa  
+- Entity Framework Core for mapping SQL to objects and viceversa, with LINQ and DbContextFactory  
 - Exception Handler and error handling  
 - GZipStream compression and decompression  
 - Hangfire batch and job automations  

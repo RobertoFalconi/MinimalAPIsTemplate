@@ -27,20 +27,20 @@ public partial class MinimalApisDbContext : DbContext
 
             var connstring = config.GetConnectionString("MinimalAPIsDB")!;
 
-            _ = optionsBuilder.UseSqlServer(connstring);
+            optionsBuilder.UseSqlServer(connstring);
         }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        _ = modelBuilder.Entity<Nlog>(entity =>
+        modelBuilder.Entity<Nlog>(entity =>
         {
-            _ = entity.HasKey(e => e.Id).HasName("PK__NLog__3214EC07BD49837C");
+            entity.HasKey(e => e.Id).HasName("PK__NLog__3214EC07BD49837C");
 
-            _ = entity.ToTable("NLog");
+            entity.ToTable("NLog");
 
-            _ = entity.Property(e => e.Id).ValueGeneratedNever();
-            _ = entity.Property(e => e.Logged).HasColumnType("datetime");
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Logged).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);
