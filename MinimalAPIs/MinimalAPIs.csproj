@@ -54,10 +54,6 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Endpoints\" />
-	</ItemGroup>
-
 	<ProjectExtensions>
 		<VisualStudio>
 			<UserProperties appsettings_1json__JsonSchema="" />

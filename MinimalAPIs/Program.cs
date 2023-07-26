@@ -30,6 +30,7 @@ global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json;
+using MinimalAPIs.Endpoints;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -61,34 +62,34 @@ var signingKeys = new List<SecurityKey> { symmetricKey, signingCertificateKey };
 // Add API services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
-{
-    options.SupportNonNullableReferenceTypes();
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JSON Web Token based security",
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
+        options.SupportNonNullableReferenceTypes();
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JSON Web Token based security",
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
             {
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new List<string>()
+            }
+        });
     });
-});
 builder.Services.AddHealthChecks();
 
 // Add AuthZ and AuthN services.
@@ -126,21 +127,20 @@ builder.Services.AddRequestDecompression();
 
 // Add custom services to the container.
 builder.Services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
-builder.Services.AddScoped<MyEndpointHandler>();
 
 // Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-            .UseSimpleAssemblyNameTypeSerializer()
-            .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
-            {
-                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                QueuePollInterval = TimeSpan.Zero,
-                UseRecommendedIsolationLevel = true,
-                DisableGlobalLocks = true
-            }));
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
 builder.Services.AddHangfireServer();
 
 if (builder.Environment.IsDevelopment())
@@ -152,17 +152,14 @@ if (builder.Environment.IsDevelopment())
 var app = builder.Build();
 
 // Map the endpoints.
-using (var scope = app.Services.CreateScope())
-{
-    scope.ServiceProvider.GetRequiredService<MyEndpointHandler>().RegisterAPIs(app, issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
-}
+app.MapMyEndpoints(issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
+app.MapHealthChecks("/Health");
 
 // Configure the HTTP request pipeline.
 app.UseResponseCompression();
 app.UseRequestDecompression();
 app.UseHsts();
 app.UseHttpsRedirection();
-app.MapHealthChecks("/Health");
 app.UseHangfireDashboard("/Hangfire/Dashboard", new DashboardOptions
 {
     Authorization = new[] { new HangfireAuthorizationFilter() }

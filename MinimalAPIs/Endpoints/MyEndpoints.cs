@@ -1,130 +1,131 @@
-﻿namespace MinimalAPIs.Handlers;
+﻿namespace MinimalAPIs.Endpoints;
 
-public class MyEndpointHandler
+public static class MyEndpoints
 {
-    public void RegisterAPIs(WebApplication app, string issuer, string audience, SymmetricSecurityKey key, X509SecurityKey signingCertificateKey, X509SecurityKey encryptingCertificateKey)
+    public static void MapMyEndpoints(this WebApplication app, string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey signingCertificateKey, X509SecurityKey encryptingCertificateKey)
     {
         var logger = app.Logger;
 
-        var tokenHandler = app.MapGroup("/token").WithTags("Token Service API");
+        var tokenRouteBuilder = app.MapGroup("/token").WithTags("Token APIs");
 
-        var hangfireHandler = app.MapGroup("/hangfire").WithTags("Hangfire Service API");
+        var hangfireRouteBuilder = app.MapGroup("/hangfire").WithTags("Hangfire APIs");
 
-        var nlogHandler = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper Services API");
+        var nlogRouteBuilder = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper APIs");
 
-        var compressingHandler = app.MapGroup("/compressing").WithTags("Compressing Service API");
+        var compressingRouteBuilder = app.MapGroup("/compressing").WithTags("Compressing APIs");
 
-        var httpClientHandler = app.MapGroup("/httpClient").WithTags("HTTP client to call another REST API");
+        var httpClientRouteBuilder = app.MapGroup("/httpClient").WithTags("HTTP Client APIs");
 
-        var mediatr = app.MapGroup("/mediatr").WithTags("MediatR APIs");
+        var mediatrRouteBuilder = app.MapGroup("/mediatr").WithTags("MediatR APIs");
 
-        var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            )).ToArray();
-
-        tokenHandler.MapGet("/generateToken", async () =>
+        tokenRouteBuilder.MapGet("/generateToken", async () =>
         {
             var token = await new MyTokenService().GenerateToken();
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateSignedToken", async () =>
+        tokenRouteBuilder.MapGet("/generateSignedToken", async () =>
         {
-            var token = await new MyTokenService().GenerateSignedToken(issuer, audience, key);
+            var token = await new MyTokenService().GenerateSignedToken(issuer, audience, symmetricKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateSignedTokenFromCertificate", async () =>
+        tokenRouteBuilder.MapGet("/generateSignedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateEncryptedToken", async () =>
+        tokenRouteBuilder.MapGet("/generateEncryptedToken", async () =>
         {
-            var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, key);
+            var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, symmetricKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+        tokenRouteBuilder.MapGet("/generateEncryptedTokenFromCertificate", async () =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, key, signingCertificateKey);
+            var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, symmetricKey, signingCertificateKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateJOSEFromCertificate", async () =>
+        tokenRouteBuilder.MapGet("/generateJOSEFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateEncryptedTokenNotSigned", async () =>
+        tokenRouteBuilder.MapGet("/generateEncryptedTokenNotSigned", async () =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, key, signingCertificateKey);
+            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, symmetricKey, signingCertificateKey);
+
             return token;
         });
 
-        tokenHandler.MapGet("/generateJOSERandomlySigned", async () =>
+        tokenRouteBuilder.MapGet("/generateJOSERandomlySigned", async () =>
         {
             var token = await new MyTokenService().GenerateJOSERandomlySigned();
+
             return token;
         });
 
-        tokenHandler.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+        tokenRouteBuilder.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-        hangfireHandler.MapGet("/recurringTryToken", () =>
+        hangfireRouteBuilder.MapGet("/recurringTryToken", () =>
         {
-            logger.LogInformation("Inizio RecurringJob");
-
             var manager = new RecurringJobManager();
 
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
 
-        hangfireHandler.MapGet("/removeRecurringJob", () =>
+        hangfireRouteBuilder.MapGet("/removeRecurringJob", () =>
         {
-            logger.LogInformation("Inizio RecurringJob");
-
             var manager = new RecurringJobManager();
 
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
 
-        hangfireHandler.MapGet("/recurringSampleJob", () =>
+        hangfireRouteBuilder.MapGet("/recurringSampleJob", () =>
         {
-            logger.LogInformation("Inizio RecurringJob");
-
             var manager = new RecurringJobManager();
 
             manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         });
 
-        hangfireHandler.MapGet("/removeSampleJob", () =>
+        hangfireRouteBuilder.MapGet("/removeSampleJob", () =>
         {
-            logger.LogInformation("Inizio RecurringJob");
-
             var manager = new RecurringJobManager();
 
             manager.RemoveIfExists("SampleJob");
         });
 
-        nlogHandler.MapGet("/tryNLog", () =>
+        nlogRouteBuilder.MapGet("/tryNLog", () =>
         {
-            logger.LogCritical("This is a critical good sample");
+            logger.LogError("This is a critical good sample");
+
             return Results.Ok();
         });
 
-        compressingHandler.MapGet("/tryCompression", async () =>
+        compressingRouteBuilder.MapGet("/tryCompression", async () =>
         {
+            var summaries = new[]
+            {
+                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            };
+
+            var forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecast
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                )).ToArray();
+
             var jsonToCompress = JsonSerializer.Serialize(forecast);
 
             var compressedData = await new MyCompressingService().Compress(jsonToCompress);
@@ -132,13 +133,14 @@ public class MyEndpointHandler
             return compressedData;
         });
 
-        compressingHandler.MapGet("/tryDecompression", async (string compressedData) =>
+        compressingRouteBuilder.MapGet("/tryDecompression", async (string compressedData) =>
         {
             var decompressedData = await new MyCompressingService().Decompress(compressedData);
+
             return decompressedData;
         });
 
-        nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory<MinimalApisDbContext> dbContextFactory) =>
+        nlogRouteBuilder.MapGet("/logsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory<MinimalApisDbContext> dbContextFactory) =>
         {
             var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
@@ -153,10 +155,11 @@ public class MyEndpointHandler
 
             stopwatch.Stop();
             var elapsedTime = stopwatch.Elapsed;
+
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        nlogHandler.MapGet("/getLogsWithDapperAndSql", async () =>
+        nlogRouteBuilder.MapGet("/logsWithDapperAndSql", async () =>
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -166,10 +169,11 @@ public class MyEndpointHandler
 
             stopwatch.Stop();
             var elapsedTime = stopwatch.Elapsed;
+
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        httpClientHandler.MapGet("/getAnotherEndpoint", async (HttpContext context) =>
+        httpClientRouteBuilder.MapGet("/callAnotherEndpoint", async (HttpContext context) =>
         {
             var request = context?.Request;
             var baseUrl = $"{request?.Scheme}://{request?.Host}{request?.PathBase}{request?.QueryString}";
@@ -184,7 +188,7 @@ public class MyEndpointHandler
                 : await response.Content.ReadAsStringAsync();
         });
 
-        httpClientHandler.MapGet("/getAnotherEndpointOptimized", async (HttpContext context) =>
+        httpClientRouteBuilder.MapGet("/callAnotherEndpointOptimized", async (HttpContext context) =>
         {
             var request = context.Request;
             var baseUrl = UriHelper.BuildAbsolute(request.Scheme, request.Host, request.PathBase, null, request.QueryString);
@@ -206,22 +210,24 @@ public class MyEndpointHandler
                     Title = response.ReasonPhrase,
                     Detail = await response.Content.ReadAsStringAsync()
                 };
+
                 return Results.Problem(problem);
             }
         });
 
+        httpClientRouteBuilder.MapGet("/callThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
 
-        httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
-
-        mediatr.MapGet("/getNotified", async (IMediator mediator) =>
+        mediatrRouteBuilder.MapGet("/getNotified", async (IMediator mediator) =>
         {
             await mediator.Publish(new Notification("Hello!"));
+
             return Results.Ok("Notified");
         });
 
-        mediatr.MapGet("/sendRequest", async (IMediator mediator) =>
+        mediatrRouteBuilder.MapGet("/sendRequest", async (IMediator mediator) =>
         {
             var response = await mediator.Send(new MyRequest("How are you?"));
+
             return Results.Ok(response);
         });
     }
