@@ -20,23 +20,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dapper" Version="2.0.123" />
-		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.2" />
-		<PackageReference Include="Hangfire.Core" Version="1.8.2" />
-		<PackageReference Include="Hangfire.SqlServer" Version="1.8.2" />
+		<PackageReference Include="Dapper" Version="2.0.143" />
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.3" />
+		<PackageReference Include="Hangfire.Core" Version="1.8.3" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.8.3" />
 		<PackageReference Include="MediatR" Version="12.1.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.31.0" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.26.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-		<PackageReference Include="NLog.Database" Version="5.2.0" />
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.3.0" />
-		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.0" />
+		<PackageReference Include="NLog.Database" Version="5.2.2" />
+		<PackageReference Include="NLog.Extensions.Logging" Version="5.3.2" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	</ItemGroup>
 
