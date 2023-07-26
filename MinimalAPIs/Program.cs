@@ -95,6 +95,7 @@ builder.Services.AddHealthChecks();
 // Add AuthZ and AuthN services.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
+    options.IncludeErrorDetails = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
