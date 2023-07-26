@@ -2,10 +2,10 @@
 Complete and working ASP.NET Core Minimal APIs template, with lots of ready to go examples, including OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
-- Architecture based on Minimal APIs pattern with Endpoint Handlers  
-- Asynchronous Service calls with Dependency Injection (DI) and Scoped Services  
+- Architecture based on Minimal APIs pattern with endpoints and route builders  
+- Asynchronous Service calls with Dependency Injection (DI) for Singleton, Transient and Scoped Services  
 - Authentication with JWT, JWS, JWE and JOSE  
-- Authorization with additional policies using Authorization Handler  
+- Authorization with additional custom policies using Authorization Handler  
 - Dapper ORM for mapping from SQL to objects and viceversa  
 - Docker container deployment  
 - Entity Framework Core for mapping SQL to objects and viceversa, with LINQ and DbContextFactory  
@@ -14,14 +14,14 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Hangfire batch and job automations  
 - HealthChecks health monitoring  
 - HSTS and HTTPS redirection  
-- MediatR for decoupling, reduce boilerplate code, easy implement CQRS  
-- Multiple environments usage  
-- NLog and JSON console  
-- OpenAPI Swagger with Swashbuckle  
-- Pool HTTP connections with HttpClientFactory
-- StopWatch  
+- HttpClientFactory with HTTP connection pooling  
+- MediatR for decoupling, reduce boilerplate code, and easy implement CQRS and/or Event-Sourcing  
+- Multiple environments usage (Development, Staging, Production and custom)  
+- NLog and JSON console and DB logs  
+- OpenAPI Swagger with Swashbuckle, Schemas, API definitions, authentication button etc.  
+- StopWatch for benchmark and timing running methods  
 
-## AuthN and AuthZ examples ready to go:  
+## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
 - JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
 - JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
