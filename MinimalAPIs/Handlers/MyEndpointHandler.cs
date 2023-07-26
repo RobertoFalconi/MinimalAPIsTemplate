@@ -16,6 +16,8 @@ public class MyEndpointHandler
 
         var httpClientHandler = app.MapGroup("/httpClient").WithTags("HTTP client to call another REST API");
 
+        var mediatr = app.MapGroup("/mediatr").WithTags("MediatR APIs");
+
         var summaries = new[]
             {
                 "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -136,7 +138,7 @@ public class MyEndpointHandler
             return decompressedData;
         });
 
-        nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory <MinimalApisDbContext> dbContextFactory) =>
+        nlogHandler.MapGet("/getLogsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory<MinimalApisDbContext> dbContextFactory) =>
         {
             var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
@@ -210,6 +212,18 @@ public class MyEndpointHandler
 
 
         httpClientHandler.MapGet("/getThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
+
+        mediatr.MapGet("/getNotified", async (IMediator mediator) =>
+        {
+            await mediator.Publish(new Notification("Hello!"));
+            return Results.Ok("Notified");
+        });
+
+        mediatr.MapGet("/sendRequest", async (IMediator mediator) =>
+        {
+            var response = await mediator.Send(new MyRequest("How are you?"));
+            return Results.Ok(response);
+        });
     }
 }
 

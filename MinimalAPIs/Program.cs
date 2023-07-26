@@ -3,6 +3,7 @@ global using Hangfire;
 global using Hangfire.Common;
 global using Hangfire.Dashboard;
 global using Hangfire.SqlServer;
+global using MediatR;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;
@@ -23,12 +24,12 @@ global using NLog.Web;
 global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Compression;
+global using System.Reflection;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json;
-
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -119,6 +120,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add performance booster services.
 builder.Services.AddHttpClient();
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 builder.Services.AddResponseCompression();
 builder.Services.AddRequestDecompression();
 

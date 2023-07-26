@@ -14,6 +14,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - Hangfire batch and job automations  
 - HealthChecks health monitoring  
 - HSTS and HTTPS redirection  
+- MediatR for decoupling, reduce boilerplate code, easy implement CQRS  
 - Multiple environments usage  
 - NLog and JSON console  
 - OpenAPI Swagger with Swashbuckle  
