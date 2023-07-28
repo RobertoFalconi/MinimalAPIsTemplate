@@ -1,4 +1,5 @@
 global using Dapper;
+global using FluentValidation;
 global using Hangfire;
 global using Hangfire.Common;
 global using Hangfire.Dashboard;
@@ -14,6 +15,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
+global using MinimalAPIs.Endpoints;
 global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
 global using MinimalAPIs.Models.DB;
@@ -30,7 +32,6 @@ global using System.Security.Cryptography;
 global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json;
-using MinimalAPIs.Endpoints;
 
 // Create the app builder.
 var builder = WebApplication.CreateBuilder(args);
@@ -175,7 +176,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 }
 else
 {
-    // Error Handler.
     app.UseExceptionHandler(new ExceptionHandlerOptions
     {
         AllowStatusCode404Response = true,
