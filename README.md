@@ -20,6 +20,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - NLog and JSON console and DB logs  
 - OpenAPI Swagger with Swashbuckle, Schemas, API definitions, authentication button etc.  
 - StopWatch for benchmark and timing running methods  
+- Validation of models and JSON body input with FluentValidation  
 
 ## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
