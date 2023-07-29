@@ -209,7 +209,7 @@ public static class MyEndpoint
             else
             {
                 var problemDetail = await response.Content.ReadAsStringAsync();
-                return Results.Problem(problemDetail, statusCode: (int)response.StatusCode, title: response.ReasonPhrase);
+                return Results.Problem(detail: problemDetail, statusCode: (int)response.StatusCode, title: response.ReasonPhrase);
             }
         });
 

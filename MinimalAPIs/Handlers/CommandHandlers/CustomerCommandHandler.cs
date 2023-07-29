@@ -1,22 +1,34 @@
 ﻿namespace MinimalAPIs.Handlers.CommandHandlers;
 
-public record CreateCustomerRequest(CustomerAPI customer) : IRequest<bool>;
+public record CreateCustomerRequest(CustomerAPI customer) : IRequest<IResult>;
 
 public class CustomerCommandHandler :
-    IRequestHandler<CreateCustomerRequest, bool>
+    IRequestHandler<CreateCustomerRequest, IResult>
 {
-    private readonly string connectionString;
+    private readonly string _connectionString;
+    IDbContextFactory<MinimalApisDbContext> _dbContextFactory;
 
-    public CustomerCommandHandler(IConfiguration configuration)
+    public CustomerCommandHandler(IConfiguration configuration, IDbContextFactory<MinimalApisDbContext> dbContextFactory)
     {
-        connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
+        _connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
+        _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<bool> Handle(CreateCustomerRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(CreateCustomerRequest request, CancellationToken cancellationToken)
     {
-        var query = "SELECT * FROM NLog WHERE 1 = @param ";
-        using var connection = new SqlConnection(connectionString);
-        var logs = (await connection.QueryAsync<Nlog>(query, new { param = (int?)1 })).ToList();
-        return true;
+        try
+        {
+            using (var context = await _dbContextFactory.CreateDbContextAsync())
+            {
+                using var dbContextTransaction = await context.Database.BeginTransactionAsync();
+                var newLog = new Nlog();
+                var res = await context.Nlog.AddAsync(newLog);
+            }
+            return Results.Ok("Your customer has been created");
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(detail: ex.Message, statusCode: 409);
+        }
     }
 }
