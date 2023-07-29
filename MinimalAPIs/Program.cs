@@ -18,6 +18,7 @@ global using Microsoft.OpenApi.Models;
 global using MinimalAPIs.Endpoints;
 global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers;
+global using MinimalAPIs.Models.API;
 global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;
 global using NLog;
