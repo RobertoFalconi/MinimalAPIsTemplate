@@ -1,12 +1,12 @@
-﻿namespace MinimalAPIs.Handlers;
+﻿namespace MinimalAPIs.Handlers.QueryHandlers;
 
 public record MyRequest(string Message) : IRequest<List<Nlog>>;
 
-public class MyRequestHandler : 
+public class MyRequestHandler :
     IRequestHandler<MyRequest, List<Nlog>>
 {
     private readonly string connectionString;
-    
+
     public MyRequestHandler(IConfiguration configuration)
     {
         connectionString = configuration.GetConnectionString("MinimalAPIsDB");

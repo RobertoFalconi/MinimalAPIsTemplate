@@ -1,23 +1,54 @@
-﻿using MinimalAPIs.Models.API;
-namespace MinimalAPIs.Endpoints;
+﻿namespace MinimalAPIs.Endpoints;
 
 public static class CustomerEndpoint
 {
-    public static void MapMyEndpoints(this WebApplication app)
+    public static void MapCustomerEndpoint(this WebApplication app)
     {
-        app.MapPost("/customer", async ([FromBody] Customer customer) =>
+        var customer = app.MapGroup("").WithTags("A Customer APIs");
+
+        customer.MapPost("/customer", async (IMediator mediator, [FromBody] CustomerAPI customer) =>
         {
             var validationResult = new CustomerValidator().Validate(customer);
 
             if (validationResult.IsValid)
             {
-                // TODO: Add customer in DB
-                return Results.Ok();
+                var isCreated = await mediator.Send(new CreateCustomerRequest(customer));
+                if (isCreated)
+                {
+                    return Results.Ok("Your customer has been added");
+                }
+                else
+                {
+                    return Results.Problem(); // TODO: Add details
+                }
             }
             else
             {
                 return Results.BadRequest(validationResult.Errors);
             }
         });
+
+        // TODO GET, PUT, DELETE
+        //customer.MapGet("/customer", async (IMediator mediator, CustomerAPI customer) =>
+        //{
+        //    var validationResult = new CustomerValidator().Validate(customer);
+
+        //    if (validationResult.IsValid)
+        //    {
+        //        var isCreated = await mediator.Send(new CreateCustomerRequest(customer));
+        //        if (isCreated)
+        //        {
+        //            return Results.Ok("Your customer has been added");
+        //        }
+        //        else
+        //        {
+        //            return Results.Problem(); // TODO: Add details
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return Results.BadRequest(validationResult.Errors);
+        //    }
+        //});
     }
 }

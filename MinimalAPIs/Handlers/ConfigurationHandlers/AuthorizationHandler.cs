@@ -1,4 +1,4 @@
-﻿namespace MinimalAPIs.Handlers;
+﻿namespace MinimalAPIs.Handlers.ConfigurationHandlers;
 
 public class AuthorizationRequirement : IAuthorizationRequirement { }
 

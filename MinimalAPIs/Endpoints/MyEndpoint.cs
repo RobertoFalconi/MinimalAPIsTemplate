@@ -1,8 +1,8 @@
 ﻿namespace MinimalAPIs.Endpoints;
 
-public static class MyEndpoints
+public static class MyEndpoint
 {
-    public static void MapMyEndpoints(this WebApplication app, string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey signingCertificateKey, X509SecurityKey encryptingCertificateKey)
+    public static void MapMyEndpoint(this WebApplication app, string issuer, string audience, SymmetricSecurityKey symmetricKey, X509SecurityKey signingCertificateKey, X509SecurityKey encryptingCertificateKey)
     {
         var logger = app.Logger;
 
@@ -229,7 +229,7 @@ public static class MyEndpoints
             return Results.Ok(response);
         });
 
-        fluentValidation.MapPost("/tryValidation", async ([FromBody] Customer customer) =>
+        fluentValidation.MapPost("/tryValidation", async ([FromBody] CustomerAPI customer) =>
         {
             var validationResult = new CustomerValidator().Validate(customer);
 

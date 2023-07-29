@@ -17,7 +17,9 @@ global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
 global using MinimalAPIs.Endpoints;
 global using MinimalAPIs.Filters;
-global using MinimalAPIs.Handlers;
+global using MinimalAPIs.Handlers.CommandHandlers;
+global using MinimalAPIs.Handlers.ConfigurationHandlers;
+global using MinimalAPIs.Handlers.QueryHandlers;
 global using MinimalAPIs.Models.API;
 global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;
@@ -155,7 +157,8 @@ if (builder.Environment.IsDevelopment())
 var app = builder.Build();
 
 // Map the endpoints.
-app.MapMyEndpoints(issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
+app.MapMyEndpoint(issuer, audience, symmetricKey, signingCertificateKey, encryptingCertificateKey);
+app.MapCustomerEndpoint();
 app.MapHealthChecks("/Health");
 
 // Configure the HTTP request pipeline.
