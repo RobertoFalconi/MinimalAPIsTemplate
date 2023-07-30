@@ -1,5 +1,5 @@
 # MinimalAPIsTemplate
-Complete and working ASP.NET Core Minimal APIs template, with lots of ready to go examples, including OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
+A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lots of ready to go examples, including lots of middlewares, the most famous third-parties packages and OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
 - Architecture based on Minimal APIs pattern with endpoints and route builders  
@@ -31,7 +31,7 @@ Complete and working ASP.NET Core Minimal APIs template, with lots of ready to g
 - JOSE ("enc": "A256CBC-HS512", "alg": "RSA-OAEP") encrypted with RSA-OAEP using a X509 Certificate asymmetric key and signed with RSA-SSA-PSS-SHA512 using another X509 Certificate asymmetric key  
 - Test API for Login, Authentication and Authorization with one of the generated Bearer token  
   
-# How to use
+# How to use token samples  
 1. Call a generate token method and copy the returned Bearer token *token*  
 2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  

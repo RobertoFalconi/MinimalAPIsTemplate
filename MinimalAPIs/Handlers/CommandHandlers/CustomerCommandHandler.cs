@@ -5,12 +5,10 @@ public record CreateCustomerRequest(CustomerAPI customer) : IRequest<IResult>;
 public class CustomerCommandHandler :
     IRequestHandler<CreateCustomerRequest, IResult>
 {
-    private readonly string _connectionString;
     IDbContextFactory<MinimalApisDbContext> _dbContextFactory;
 
     public CustomerCommandHandler(IConfiguration configuration, IDbContextFactory<MinimalApisDbContext> dbContextFactory)
     {
-        _connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
         _dbContextFactory = dbContextFactory;
     }
 
@@ -31,4 +29,4 @@ public class CustomerCommandHandler :
             return Results.Problem(detail: ex.Message, statusCode: 409);
         }
     }
-}
+} 
