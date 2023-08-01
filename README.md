@@ -7,7 +7,7 @@ A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lo
 - **Authentication** with JWT, JWS, JWE and JOSE  
 - **Authorization** with additional custom policies using Authorization Handler
 - **CQRS** pattern to separates queries (read) and commands (write) operations on data into two different models  
-- **Dapper** ORM for mapping from SQL to objects and viceversa, with common **SQL** language and **SqlClient's SqlConnection**  
+- **Dapper** ORM for mapping SQL to objects and viceversa, with common **SQL** language and **SqlClient's SqlConnection**  
 - **Docker** container deployment  
 - **Entity Framework Core** for mapping SQL to objects and viceversa, with **LINQ** and **DbContextFactory**  
 - **Exception Handler** and error handling
