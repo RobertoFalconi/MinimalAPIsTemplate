@@ -31,7 +31,7 @@ A comprehensive and fully functional ASP.NET Core Minimal APIs (with mediator an
 - JOSE ("enc": "A256CBC-HS512", "alg": "RSA-OAEP") encrypted with RSA-OAEP using a X509 Certificate asymmetric key and signed with RSA-SSA-PSS-SHA512 using another X509 Certificate asymmetric key  
 - Test API for Login, Authentication and Authorization with one of the generated Bearer token  
   
-# How to use token samples  
+# How to use token examples  
 1. Call a generate token method and copy the returned Bearer token *token*  
 2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
 3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
@@ -46,7 +46,7 @@ openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificat
 ```
 
 ## How to generate NLog table  
-You can use the following T-SQL command to generate a table working with this NLog sample:  
+You can use the following T-SQL command to generate a table working with this NLog example:  
 
 ```
 CREATE TABLE [dbo].[NLog] (
