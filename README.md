@@ -2,26 +2,26 @@
 A comprehensive and fully functional ASP.NET Core Minimal APIs (with mediator and CQRS) template, with lots of ready to go examples, including lots of middlewares, the most famous third-parties packages and OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
-- Architectures based on Minimal APIs pattern with endpoints and route handler builders, to easily implement CQRS and Mediator patterns and Microservices architectures  
-- Asynchronous service calls with Dependency Injection (DI) for Singleton, Transient and Scoped services  
-- Authentication with JWT, JWS, JWE and JOSE  
-- Authorization with additional custom policies using Authorization Handler
-- CQRS pattern to separates queries (read) and commands (write) operations on data into two different models  
-- Dapper ORM for mapping from SQL to objects and viceversa, with common SQL language and SqlClient's SqlConnection  
-- Docker container deployment  
-- Entity Framework Core for mapping SQL to objects and viceversa, with LINQ and DbContextFactory  
-- Exception Handler and error handling
-- Fluent Validation for validating models and JSON body input  
-- GZip Stream compression and decompression  
-- Hangfire batch and job automations  
-- HealthChecks health monitoring  
-- HSTS and HTTPS redirection  
-- HttpClientFactory with HTTP connection pooling  
-- MediatR for decoupling, reduce boilerplate code, and easy implement CQRS and/or Event-Sourcing  
-- Multiple environments usage (Development, Staging, Production and custom)  
-- NLog and JSON console and DB logs  
-- OpenAPI Swagger with Swashbuckle, Schemas, API definitions, authentication button etc.  
-- StopWatch for benchmark and timing running methods  
+- **Architecture** based on the Minimal APIs concept, with endpoints and route handlers, to easily implement Mediator, CQRS and Event-Sourcing patterns and Microservices architectures  
+- Asynchronous service calls with **Dependency Injection (DI)** for Singleton, Transient and Scoped services  
+- **Authentication** with JWT, JWS, JWE and JOSE  
+- **Authorization** with additional custom policies using Authorization Handler
+- **CQRS** pattern to separates queries (read) and commands (write) operations on data into two different models  
+- **Dapper** ORM for mapping from SQL to objects and viceversa, with common **SQL** language and **SqlClient's SqlConnection**  
+- **Docker** container deployment  
+- **Entity Framework Core** for mapping SQL to objects and viceversa, with **LINQ** and **DbContextFactory**  
+- **Exception Handler** and error handling
+- **Fluent Validation** for validating models and JSON body input  
+- **GZip Stream** compression and decompression  
+- **Hangfire** batch and job automations  
+- **HealthChecks** health monitoring  
+- **HSTS** and **HTTPS** redirection  
+- **HttpClientFactory** with HTTP connection pooling  
+- **MediatR** for decoupling, reduce boilerplate code, and easy implement **Mediator**, **CQRS**, **Event-Sourcing** patterns  
+- **Multiple Environments** usage (Development, Staging, Production and custom)  
+- **NLog** and JSON console and DB logs  
+- **OpenAPI Swagger** using **Swashbuckle**, with Schemas, API definitions, authentication button etc.  
+- **StopWatch** for benchmark and timing running methods  
 
 ## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
