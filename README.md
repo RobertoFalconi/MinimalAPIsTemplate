@@ -2,15 +2,17 @@
 A comprehensive and fully functional ASP.NET Core Minimal APIs (with mediator and CQRS) template, with lots of ready to go examples, including lots of middlewares, the most famous third-parties packages and OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) as Bearer.  
 
 ## Examples of services and middlewares in this template:  
-- Architecture based on Minimal APIs pattern with endpoints and route builders  
-- Asynchronous Service calls with Dependency Injection (DI) for Singleton, Transient and Scoped Services  
+- Architectures based on Minimal APIs pattern with endpoints and route handler builders, to easily implement CQRS and Mediator patterns and Microservices architectures  
+- Asynchronous service calls with Dependency Injection (DI) for Singleton, Transient and Scoped services  
 - Authentication with JWT, JWS, JWE and JOSE  
-- Authorization with additional custom policies using Authorization Handler  
-- Dapper ORM for mapping from SQL to objects and viceversa  
+- Authorization with additional custom policies using Authorization Handler
+- CQRS pattern to separates queries (read) and commands (write) operations on data into two different models  
+- Dapper ORM for mapping from SQL to objects and viceversa, with common SQL language and SqlClient's SqlConnection  
 - Docker container deployment  
 - Entity Framework Core for mapping SQL to objects and viceversa, with LINQ and DbContextFactory  
-- Exception Handler and error handling  
-- GZipStream compression and decompression  
+- Exception Handler and error handling
+- Fluent Validation for validating models and JSON body input  
+- GZip Stream compression and decompression  
 - Hangfire batch and job automations  
 - HealthChecks health monitoring  
 - HSTS and HTTPS redirection  
@@ -20,7 +22,6 @@ A comprehensive and fully functional ASP.NET Core Minimal APIs (with mediator an
 - NLog and JSON console and DB logs  
 - OpenAPI Swagger with Swashbuckle, Schemas, API definitions, authentication button etc.  
 - StopWatch for benchmark and timing running methods  
-- Validation of models and JSON body input with FluentValidation  
 
 ## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
