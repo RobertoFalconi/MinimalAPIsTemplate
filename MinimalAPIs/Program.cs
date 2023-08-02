@@ -19,6 +19,7 @@ global using MinimalAPIs.Filters;
 global using MinimalAPIs.Handlers.CommandHandlers;
 global using MinimalAPIs.Handlers.ConfigurationHandlers;
 global using MinimalAPIs.Handlers.QueryHandlers;
+global using MinimalAPIs.Handlers.ServiceHandlers;
 global using MinimalAPIs.Models.API;
 global using MinimalAPIs.Models.DB;
 global using MinimalAPIs.Services;

@@ -24,9 +24,11 @@ public static class MyEndpoint
 
         var fluentValidation = app.MapGroup("/fluentValidation").WithTags("Validation APIs");
 
-        token.MapGet("/generateToken", async () =>
+        var benchmarks = app.MapGroup("/benchmarks").WithTags("Benchmarks");
+
+        token.MapGet("/generateToken", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateToken();
+            var token = await tokenService.GenerateToken();
 
             return token;
         });
@@ -38,44 +40,44 @@ public static class MyEndpoint
             return token;
         });
 
-        token.MapGet("/generateSignedTokenFromCertificate", async () =>
+        token.MapGet("/generateSignedTokenFromCertificate", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
+            var token = await tokenService.GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
 
             return token;
         });
 
-        token.MapGet("/generateEncryptedToken", async () =>
+        token.MapGet("/generateEncryptedToken", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, symmetricKey);
+            var token = await tokenService.GenerateEncryptedToken(issuer, audience, symmetricKey);
 
             return token;
         });
 
-        token.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+        token.MapGet("/generateEncryptedTokenFromCertificate", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, symmetricKey, signingCertificateKey);
+            var token = await tokenService.GenerateEncryptedTokenFromCertificate(issuer, audience, symmetricKey, signingCertificateKey);
 
             return token;
         });
 
-        token.MapGet("/generateJOSEFromCertificate", async () =>
+        token.MapGet("/generateJOSEFromCertificate", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
+            var token = await tokenService.GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
 
             return token;
         });
 
-        token.MapGet("/generateEncryptedTokenNotSigned", async () =>
+        token.MapGet("/generateEncryptedTokenNotSigned", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, symmetricKey, signingCertificateKey);
+            var token = await tokenService.GenerateEncryptedTokenNotSigned(issuer, audience, symmetricKey, signingCertificateKey);
 
             return token;
         });
 
-        token.MapGet("/generateJOSERandomlySigned", async () =>
+        token.MapGet("/generateJOSERandomlySigned", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateJOSERandomlySigned();
+            var token = await tokenService.GenerateJOSERandomlySigned();
 
             return token;
         });
@@ -253,21 +255,105 @@ public static class MyEndpoint
 
             return Results.Accepted();
         });
+
+        benchmarks.MapGet("/evaluateServiceInitialization", async () =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100000; i++)
+            {
+
+                var summaries = new[]
+                {
+                    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+                };
+
+                var forecast = Enumerable.Range(1, 5).Select(index =>
+                    new WeatherForecastAPI
+                    (
+                        DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                        Random.Shared.Next(-20, 55),
+                        summaries[Random.Shared.Next(summaries.Length)]
+                    )).ToArray();
+
+                var jsonToCompress = JsonSerializer.Serialize(forecast);
+
+                var compressingService = new MyCompressingService();
+
+                var response = await compressingService.Compress(jsonToCompress);
+            }
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+
+            return Results.Ok(new { elapsedTime });
+        });
+
+        benchmarks.MapGet("/evaluateDependencyInjection", async (MyCompressingService compressingService) =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100000; i++)
+            {
+
+                var summaries = new[]
+                {
+                    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+                };
+
+                var forecast = Enumerable.Range(1, 5).Select(index =>
+                    new WeatherForecastAPI
+                    (
+                        DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                        Random.Shared.Next(-20, 55),
+                        summaries[Random.Shared.Next(summaries.Length)]
+                    )).ToArray();
+
+                var jsonToCompress = JsonSerializer.Serialize(forecast);
+
+                var response = await compressingService.Compress(jsonToCompress);
+            }
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+
+            return Results.Ok(new { elapsedTime });
+        });
+
+        benchmarks.MapPost("/evaluateMediatR", async (IMediator mediator) =>
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            for (int i = 0; i < 100000; i++)
+            {
+
+                var summaries = new[]
+                {
+                    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+                };
+
+                var forecast = Enumerable.Range(1, 5).Select(index =>
+                    new WeatherForecastAPI
+                    (
+                        DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                        Random.Shared.Next(-20, 55),
+                        summaries[Random.Shared.Next(summaries.Length)]
+                    )).ToArray();
+
+                var jsonToCompress = JsonSerializer.Serialize(forecast);
+
+                var response = await mediator.Send(new CompressRequest(jsonToCompress));
+            }
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+
+            return Results.Ok(new { elapsedTime });
+        });
     }
 
     public static async Task<int> Bridge()
     {
         return 1;
-    }
-}
-
-internal record WeatherForecastAPI(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF
-    {
-        get
-        {
-            return 32 + (int)(TemperatureC / 0.5556);
-        }
     }
 }

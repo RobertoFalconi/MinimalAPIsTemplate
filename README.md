@@ -21,7 +21,7 @@ A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lo
 - **Multiple Environments** usage (Development, Staging, Production and custom)  
 - **NLog** and JSON console and DB logs  
 - **OpenAPI Swagger** using **Swashbuckle**, with Schemas, API definitions, authentication button etc.  
-- **StopWatch** for benchmark and timing running methods  
+- **StopWatch** for benchmarks and timing running methods  
 
 ## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
