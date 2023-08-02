@@ -5,17 +5,17 @@ public record MyRequest(string Message) : IRequest<List<Nlog>>;
 public class MyRequestHandler :
     IRequestHandler<MyRequest, List<Nlog>>
 {
-    private readonly string connectionString;
+    private readonly string _connectionString;
 
     public MyRequestHandler(IConfiguration configuration)
     {
-        connectionString = configuration.GetConnectionString("MinimalAPIsDB");
+        _connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
     }
 
     public async Task<List<Nlog>> Handle(MyRequest request, CancellationToken cancellationToken)
     {
         var query = "SELECT * FROM NLog WHERE 1 = @param ";
-        using var connection = new SqlConnection(connectionString);
+        using var connection = new SqlConnection(_connectionString);
         var logs = (await connection.QueryAsync<Nlog>(query, new { param = (int?)1 })).ToList();
         return logs;
     }

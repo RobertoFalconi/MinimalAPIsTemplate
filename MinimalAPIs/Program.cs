@@ -13,7 +13,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
-global using Microsoft.Net.Http.Headers;
 global using Microsoft.OpenApi.Models;
 global using MinimalAPIs.Endpoints;
 global using MinimalAPIs.Filters;
@@ -130,9 +129,6 @@ builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromA
 builder.Services.AddResponseCompression();
 builder.Services.AddRequestDecompression();
 
-// Add custom services to the container.
-builder.Services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
-
 // Add third-parties services to the container.
 builder.Services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -150,8 +146,13 @@ builder.Services.AddHangfireServer();
 
 if (builder.Environment.IsDevelopment())
 {
-    // Move services you want to use in development only here.
+    // Move services you want to use in development-only here.
 }
+
+// Add custom services to the container.
+builder.Services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
+builder.Services.AddScoped<MyTokenService>();
+builder.Services.AddScoped<MyCompressingService>();
 
 // Add the app to the container.
 var app = builder.Build();

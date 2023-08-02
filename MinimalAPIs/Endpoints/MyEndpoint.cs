@@ -6,116 +6,111 @@ public static class MyEndpoint
     {
         var logger = app.Logger;
 
-        var tokenRouteBuilder = app.MapGroup("/token").WithTags("Token APIs");
+        var token = app.MapGroup("/token").WithTags("Token APIs");
 
-        var hangfireRouteBuilder = app.MapGroup("/hangfire").WithTags("Hangfire APIs");
+        var hangfire = app.MapGroup("/hangfire").WithTags("Hangfire APIs");
 
-        var nlogRouteBuilder = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper APIs");
+        var nlog = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper APIs");
 
-        var compressingRouteBuilder = app.MapGroup("/compressing").WithTags("Compressing APIs");
+        var entityFramework = app.MapGroup("/nlog").WithTags("Entity Framework Core APIs");
 
-        var httpClientRouteBuilder = app.MapGroup("/httpClient").WithTags("HTTP Client APIs");
+        var dapper = app.MapGroup("/nlog").WithTags("Dapper APIs");
 
-        var mediatrRouteBuilder = app.MapGroup("/mediatr").WithTags("MediatR APIs");
+        var compressing = app.MapGroup("/compressing").WithTags("Compressing APIs");
+
+        var httpClient = app.MapGroup("/httpClient").WithTags("HTTP Client APIs");
+
+        var mediatr = app.MapGroup("/mediatr").WithTags("MediatR APIs");
 
         var fluentValidation = app.MapGroup("/fluentValidation").WithTags("Validation APIs");
 
-        tokenRouteBuilder.MapGet("/generateToken", async () =>
+        token.MapGet("/generateToken", async () =>
         {
             var token = await new MyTokenService().GenerateToken();
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateSignedToken", async () =>
+        token.MapGet("/generateSignedToken", async (MyTokenService tokenService) =>
         {
-            var token = await new MyTokenService().GenerateSignedToken(issuer, audience, symmetricKey);
+            var token = await tokenService.GenerateSignedToken(issuer, audience, symmetricKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateSignedTokenFromCertificate", async () =>
+        token.MapGet("/generateSignedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateSignedTokenFromCertificate(issuer, audience, signingCertificateKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateEncryptedToken", async () =>
+        token.MapGet("/generateEncryptedToken", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedToken(issuer, audience, symmetricKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateEncryptedTokenFromCertificate", async () =>
+        token.MapGet("/generateEncryptedTokenFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedTokenFromCertificate(issuer, audience, symmetricKey, signingCertificateKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateJOSEFromCertificate", async () =>
+        token.MapGet("/generateJOSEFromCertificate", async () =>
         {
             var token = await new MyTokenService().GenerateJOSEFromCertificate(issuer, audience, signingCertificateKey, encryptingCertificateKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateEncryptedTokenNotSigned", async () =>
+        token.MapGet("/generateEncryptedTokenNotSigned", async () =>
         {
             var token = await new MyTokenService().GenerateEncryptedTokenNotSigned(issuer, audience, symmetricKey, signingCertificateKey);
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/generateJOSERandomlySigned", async () =>
+        token.MapGet("/generateJOSERandomlySigned", async () =>
         {
             var token = await new MyTokenService().GenerateJOSERandomlySigned();
 
             return token;
         });
 
-        tokenRouteBuilder.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
+        token.MapGet("/tryToken", () => Results.Ok()).RequireAuthorization();
 
-        tokenRouteBuilder.MapGet("/tryTokenPlusCustomPolicy", () => Results.Ok()).RequireAuthorization("IsAuthorized");
+        token.MapGet("/tryTokenPlusCustomPolicy", () => Results.Ok()).RequireAuthorization("IsAuthorized");
 
-        hangfireRouteBuilder.MapGet("/recurringTryToken", () =>
+        hangfire.MapGet("/recurringTryToken", (IRecurringJobManager manager) =>
         {
-            var manager = new RecurringJobManager();
-
             manager.AddOrUpdate("RecurringJobId", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         }).RequireAuthorization();
 
-        hangfireRouteBuilder.MapGet("/removeRecurringJob", () =>
+        hangfire.MapGet("/removeRecurringJob", () =>
         {
             var manager = new RecurringJobManager();
 
             manager.RemoveIfExists("RecurringJobId");
         }).RequireAuthorization();
 
-        hangfireRouteBuilder.MapGet("/recurringSampleJob", () =>
+        hangfire.MapGet("/recurringSampleJob", () =>
         {
             var manager = new RecurringJobManager();
 
             manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Results.Ok(null)), Cron.Minutely());
         });
 
-        hangfireRouteBuilder.MapGet("/removeSampleJob", () =>
+        hangfire.MapGet("/removeSampleJob", () =>
         {
             var manager = new RecurringJobManager();
 
             manager.RemoveIfExists("SampleJob");
         });
 
-        nlogRouteBuilder.MapGet("/tryNLog", () =>
-        {
-            logger.LogError("This is a critical good sample");
-
-            return Results.Ok();
-        });
-
-        compressingRouteBuilder.MapGet("/tryCompression", async () =>
+        compressing.MapGet("/tryCompression", async (MyCompressingService compressingService) =>
         {
             var summaries = new[]
             {
@@ -123,7 +118,7 @@ public static class MyEndpoint
             };
 
             var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
+                new WeatherForecastAPI
                 (
                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                     Random.Shared.Next(-20, 55),
@@ -132,19 +127,26 @@ public static class MyEndpoint
 
             var jsonToCompress = JsonSerializer.Serialize(forecast);
 
-            var compressedData = await new MyCompressingService().Compress(jsonToCompress);
+            var compressedData = await compressingService.Compress(jsonToCompress);
 
             return compressedData;
         });
 
-        compressingRouteBuilder.MapGet("/tryDecompression", async (string compressedData) =>
+        compressing.MapGet("/tryDecompression", async (MyCompressingService compressingService, string compressedData) =>
         {
-            var decompressedData = await new MyCompressingService().Decompress(compressedData);
+            var decompressedData = await compressingService.Decompress(compressedData);
 
             return decompressedData;
         });
 
-        nlogRouteBuilder.MapGet("/logsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory<MinimalApisDbContext> dbContextFactory) =>
+        nlog.MapGet("/tryNLog", () =>
+        {
+            logger.LogError("This is a critical good sample");
+
+            return Results.Ok();
+        });
+
+        entityFramework.MapGet("/logsWithEntityFrameworkAndLinq", async (int page, int pageSize, IDbContextFactory<MinimalApisDbContext> dbContextFactory) =>
         {
             var stopwatch = Stopwatch.StartNew();
             List<Nlog> logs;
@@ -163,7 +165,7 @@ public static class MyEndpoint
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        nlogRouteBuilder.MapGet("/logsWithDapperAndSql", async () =>
+        dapper.MapGet("/logsWithDapperAndSql", async () =>
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -177,7 +179,7 @@ public static class MyEndpoint
             return Results.Ok(new { elapsedTime, logs });
         });
 
-        httpClientRouteBuilder.MapGet("/callAnotherEndpoint", async (HttpContext context) =>
+        httpClient.MapGet("/callAnotherEndpoint", async (HttpContext context) =>
         {
             var request = context?.Request;
             var baseUrl = $"{request?.Scheme}://{request?.Host}{request?.PathBase}{request?.QueryString}";
@@ -192,7 +194,7 @@ public static class MyEndpoint
                 : await response.Content.ReadAsStringAsync();
         });
 
-        httpClientRouteBuilder.MapGet("/callAnotherEndpointOptimized", async (HttpContext context) =>
+        httpClient.MapGet("/callAnotherEndpointOptimized", async (HttpContext context) =>
         {
             var request = context.Request;
             var baseUrl = UriHelper.BuildAbsolute(request.Scheme, request.Host, request.PathBase, null, request.QueryString);
@@ -213,16 +215,16 @@ public static class MyEndpoint
             }
         });
 
-        httpClientRouteBuilder.MapGet("/callThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/getThisEndpoint !" }));
+        httpClient.MapGet("/callThisEndpoint", () => Results.Ok(new { res = "This is the response from httpClient/callThisEndpoint!" }));
 
-        mediatrRouteBuilder.MapGet("/getNotified", async (IMediator mediator) =>
+        mediatr.MapGet("/getNotified", async (IMediator mediator) =>
         {
             await mediator.Publish(new Notification("Hello!"));
 
             return Results.Ok("Notified");
         });
 
-        mediatrRouteBuilder.MapGet("/sendRequest", async (IMediator mediator) =>
+        mediatr.MapGet("/sendRequest", async (IMediator mediator) =>
         {
             var response = await mediator.Send(new MyRequest("How are you?"));
 
@@ -242,10 +244,24 @@ public static class MyEndpoint
                 return Results.BadRequest(validationResult.Errors);
             }
         });
+
+        app.MapPost("/recurringRequest", (IMediator mediator) =>
+        {
+            var manager = new RecurringJobManager();
+
+            manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Bridge()), Cron.Minutely());
+
+            return Results.Accepted();
+        });
+    }
+
+    public static async Task<int> Bridge()
+    {
+        return 1;
     }
 }
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+internal record WeatherForecastAPI(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF
     {
