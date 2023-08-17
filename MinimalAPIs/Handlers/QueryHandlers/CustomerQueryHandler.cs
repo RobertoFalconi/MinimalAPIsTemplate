@@ -1,9 +1,8 @@
 ﻿namespace MinimalAPIs.Handlers.QueryHandlers;
 
-public record ReadCustomerRequest(int customerId) : IRequest<IResult>;
+public sealed record ReadCustomerRequest(int customerId) : IRequest<IResult>;
 
-public class CustomerQueryHandler :
-    IRequestHandler<ReadCustomerRequest, IResult>
+public sealed class CustomerQueryHandler : IRequestHandler<ReadCustomerRequest, IResult>
 {
     private readonly string connectionString;
 

@@ -1,11 +1,10 @@
 ﻿namespace MinimalAPIs.Handlers.CommandHandlers;
 
-public record CreateCustomerRequest(CustomerAPI customer) : IRequest<IResult>;
+public sealed record CreateCustomerRequest(CustomerAPI customer) : IRequest<IResult>;
 
-public class CustomerCommandHandler :
-    IRequestHandler<CreateCustomerRequest, IResult>
+public sealed class CustomerCommandHandler : IRequestHandler<CreateCustomerRequest, IResult>
 {
-    IDbContextFactory<MinimalApisDbContext> _dbContextFactory;
+    private readonly IDbContextFactory<MinimalApisDbContext> _dbContextFactory;
 
     public CustomerCommandHandler(IConfiguration configuration, IDbContextFactory<MinimalApisDbContext> dbContextFactory)
     {
@@ -29,4 +28,4 @@ public class CustomerCommandHandler :
             return Results.Problem(detail: ex.Message, statusCode: 409);
         }
     }
-} 
+}

@@ -4,7 +4,7 @@ public static class CustomerEndpoint
 {
     public static void MapCustomerEndpoint(this WebApplication app)
     {
-        var customer = app.MapGroup("").WithTags("A Customer APIs");
+        var customer = app.MapGroup("").WithTags("Customer APIs");
 
         customer.MapPost("/customer", async (IMediator mediator, [FromBody] CustomerAPI customer) =>
         {

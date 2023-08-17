@@ -1,9 +1,8 @@
 ﻿namespace MinimalAPIs.Handlers.QueryHandlers;
 
-public record MyRequest(string Message) : IRequest<List<Nlog>>;
+public sealed record MyRequest(string Message) : IRequest<List<Nlog>>;
 
-public class MyRequestHandler :
-    IRequestHandler<MyRequest, List<Nlog>>
+public sealed class MyRequestHandler : IRequestHandler<MyRequest, List<Nlog>>
 {
     private readonly string _connectionString;
 

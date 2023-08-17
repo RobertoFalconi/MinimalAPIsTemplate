@@ -1,8 +1,8 @@
 ﻿namespace MinimalAPIs.Handlers.ConfigurationHandlers;
 
-public record Notification(string Message) : INotification;
+public sealed record Notification(string Message) : INotification;
 
-public class NotificationHandler : INotificationHandler<Notification>
+public sealed class NotificationHandler : INotificationHandler<Notification>
 {
     public async Task Handle(Notification notification, CancellationToken cancellationToken)
     {

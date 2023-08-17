@@ -24,11 +24,18 @@ public static class MyEndpoint
 
         var fluentValidation = app.MapGroup("/fluentValidation").WithTags("Validation APIs");
 
-        var benchmarks = app.MapGroup("/benchmarks").WithTags("Benchmarks");
+        var benchmarks = app.MapGroup("/benchmarks").WithTags("Benchmarks APIs");
 
         token.MapGet("/generateToken", async (MyTokenService tokenService) =>
         {
             var token = await tokenService.GenerateToken();
+
+            return token;
+        });
+
+        token.MapGet("/generateTokenWithMediator", async (IMediator mediator) =>
+        {
+            var token = await mediator.Send(new GenerateTokenRequest());
 
             return token;
         });
@@ -112,7 +119,7 @@ public static class MyEndpoint
             manager.RemoveIfExists("SampleJob");
         });
 
-        compressing.MapGet("/tryCompression", async (MyCompressingService compressingService) =>
+        compressing.MapGet("/tryCompression", async (IMediator mediator) =>
         {
             var summaries = new[]
             {
@@ -129,14 +136,14 @@ public static class MyEndpoint
 
             var jsonToCompress = JsonSerializer.Serialize(forecast);
 
-            var compressedData = await compressingService.Compress(jsonToCompress);
+            var compressedData = await mediator.Send(new CompressRequest(jsonToCompress));
 
             return compressedData;
         });
 
-        compressing.MapGet("/tryDecompression", async (MyCompressingService compressingService, string compressedData) =>
+        compressing.MapGet("/tryDecompression", async (IMediator mediator, string compressedData) =>
         {
-            var decompressedData = await compressingService.Decompress(compressedData);
+            var decompressedData = await mediator.Send(new DecompressRequest(compressedData));
 
             return decompressedData;
         });
@@ -281,6 +288,8 @@ public static class MyEndpoint
                 var compressingService = new MyCompressingService();
 
                 var response = await compressingService.Compress(jsonToCompress);
+
+                var decompressedResponse = await compressingService.Decompress(response);
             }
 
             stopwatch.Stop();
@@ -312,6 +321,8 @@ public static class MyEndpoint
                 var jsonToCompress = JsonSerializer.Serialize(forecast);
 
                 var response = await compressingService.Compress(jsonToCompress);
+
+                var decompressedResponse = await compressingService.Decompress(response);
             }
 
             stopwatch.Stop();
@@ -343,6 +354,8 @@ public static class MyEndpoint
                 var jsonToCompress = JsonSerializer.Serialize(forecast);
 
                 var response = await mediator.Send(new CompressRequest(jsonToCompress));
+
+                var decompressedResponse = await mediator.Send(new DecompressRequest(response));
             }
 
             stopwatch.Stop();
