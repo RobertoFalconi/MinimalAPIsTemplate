@@ -1,6 +1,9 @@
 # MinimalAPIsTemplate
 A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lots of ready-to-go examples, including middlewares, first-party and third-parties packages, OAuth 2.0 Authentication using JSON Web Algorithms and Tokens (JWA, JWT, JWS, JWE) Bearer.  
 
+### NuGet link:  
+https://www.nuget.org/packages/Fucu.MinimalAPIsTemplate  
+  
 ## Examples of services and middlewares in this template:  
 - **Architecture** based on the Minimal APIs concept, with endpoints and route handlers, to easily implement Mediator, CQRS and Event-Sourcing patterns and Microservices architectures  
 - Asynchronous service calls with **Dependency Injection (DI)** for Singleton, Transient and Scoped services  
