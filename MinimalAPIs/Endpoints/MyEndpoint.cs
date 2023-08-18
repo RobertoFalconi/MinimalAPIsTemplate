@@ -10,11 +10,11 @@ public static class MyEndpoint
 
         var hangfire = app.MapGroup("/hangfire").WithTags("Hangfire APIs");
 
-        var nlog = app.MapGroup("/nlog").WithTags("NLog, EF and Dapper APIs");
+        var nlog = app.MapGroup("/nlog").WithTags("NLog APIs");
 
-        var entityFramework = app.MapGroup("/nlog").WithTags("Entity Framework Core APIs");
+        var entityFramework = app.MapGroup("/efc").WithTags("Entity Framework Core APIs");
 
-        var dapper = app.MapGroup("/nlog").WithTags("Dapper APIs");
+        var dapper = app.MapGroup("/dapper").WithTags("Dapper APIs");
 
         var compressing = app.MapGroup("/compressing").WithTags("Compressing APIs");
 
