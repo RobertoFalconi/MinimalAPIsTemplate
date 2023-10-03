@@ -4,11 +4,11 @@ public sealed record ReadCustomerRequest(int customerId) : IRequest<IResult>;
 
 public sealed class CustomerQueryHandler : IRequestHandler<ReadCustomerRequest, IResult>
 {
-    private readonly string connectionString;
+    private readonly string _connectionString;
 
     public CustomerQueryHandler(IConfiguration configuration)
     {
-        connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
+        _connectionString = configuration.GetConnectionString("MinimalAPIsDB")!;
     }
 
     public async Task<IResult> Handle(ReadCustomerRequest request, CancellationToken cancellationToken)
@@ -16,7 +16,7 @@ public sealed class CustomerQueryHandler : IRequestHandler<ReadCustomerRequest, 
         var query = "SELECT * FROM NLog WHERE 1 = @param ";
         try
         {
-            using var connection = new SqlConnection(connectionString);
+            using var connection = new SqlConnection(_connectionString);
             var logs = (await connection.QueryAsync<Nlog>(query, new { param = (int?)1 })).ToList();
             return logs.Any() ? Results.Ok(logs) : Results.NotFound();
         }
