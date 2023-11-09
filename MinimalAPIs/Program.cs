@@ -46,9 +46,7 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 // Add loggers to the container.
-builder.Logging.AddJsonConsole();
-builder.Logging.AddNLogWeb(new NLogLoggingConfiguration(builder.Configuration.GetSection("NLog")));
-LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+LogManager.Configuration = new NLogLoggingConfiguration(builder.Configuration.GetSection("NLog"));
 var logger = LoggerFactory.Create(builder => builder.AddNLog().AddJsonConsole()).CreateLogger<Program>();
 logger.LogInformation("So it begins");
 
