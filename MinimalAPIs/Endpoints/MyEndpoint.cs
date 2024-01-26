@@ -254,11 +254,12 @@ public static class MyEndpoint
             }
         });
 
-        app.MapPost("/recurringRequest", (IMediator mediator) =>
+        app.MapPost("/recurringRequestMediatRWithHangFire", (IMediator mediator) =>
         {
             var manager = new RecurringJobManager();
 
-            manager.AddOrUpdate("SampleJob", Job.FromExpression(() => Bridge()), Cron.Minutely());
+            RecurringJob.AddOrUpdate<CustomerQueryHandler>("ReadCustomerRequest",
+                handler => handler.Handle(new ReadCustomerRequest(1), CancellationToken.None), Cron.Minutely());
 
             return Results.Accepted();
         });
@@ -363,10 +364,5 @@ public static class MyEndpoint
 
             return Results.Ok(new { elapsedTime });
         });
-    }
-
-    public static async Task<int> Bridge()
-    {
-        return 1;
     }
 }
