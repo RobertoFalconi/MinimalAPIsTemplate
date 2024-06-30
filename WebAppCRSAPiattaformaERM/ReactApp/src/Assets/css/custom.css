@@ -1,0 +1,27 @@
+/* //CARD HOME */
+.contenutoInEvidenza{
+  width: 44% !important;
+  position: relative;
+  left: 25%;
+}
+
+.cardPrincipale {
+  width: 800px;
+  height: 300px;
+  display: flex !important
+}
+
+.imgPrincipale{
+  height: 100px;
+  position: relative;
+  top: 25%;
+}
+
+/* FOOTER */
+.footerBG{
+  height: 50px !important;
+  background-color: #001529 !important;
+  position: absolute;
+  width: 100%;
+  margin-top: 15px;
+}

@@ -1,0 +1,15 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Error",
+      "Microsoft": "Error",
+      "Microsoft.Hosting.Lifetime": "Error",
+      "WebAppCRSAPiattaformaERM": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "Roles": [
+    /*Amministratore*/ "aaa",
+    /*UTENTE_SEDE*/ "bbb"
+  ]
+}
