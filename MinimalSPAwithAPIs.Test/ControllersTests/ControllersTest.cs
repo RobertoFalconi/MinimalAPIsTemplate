@@ -2,14 +2,14 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Reflection;
-using WebAppCRSAPiattaformaERM.Handlers.QueryHandlers;
+using MinimalSPAwithAPIs.Handlers.QueryHandlers;
 
-namespace WebAppCRSAPiattaformaERM.Test.ControllersTests;
+namespace MinimalSPAwithAPIs.Test.ControllersTests;
 
 public class ControllersTest
 {
     [Theory]
-    [InlineData("WebAppCRSAPiattaformaERM", "WebAppCRSAPiattaformaERM.Controllers")]
+    [InlineData("MinimalSPAwithAPIs", "MinimalSPAwithAPIs.Controllers")]
     public void TestControllers(string assemblyName, params string[] namespaces)
     {
         // Carica l'assembly specificato 

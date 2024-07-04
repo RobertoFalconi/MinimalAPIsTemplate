@@ -22,7 +22,7 @@ public class AggiornaMyFirstApiValidator : AbstractValidator<AggiornaMyFirstApiC
 
         RuleFor(x => x)
             .MustAsync(DateDoNotOverlap)
-            .WithMessage("Attenzione! L'intervallo temporale indicato non è congruente con le altre validità Campagna presenti a sistema.");
+            .WithMessage("Attenzione! L'intervallo temporale indicato non è congruente.");
     }
 
     private async Task<bool> DateDoNotOverlap(AggiornaMyFirstApiCommand dto, CancellationToken cancellation)

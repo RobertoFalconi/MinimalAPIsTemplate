@@ -10,15 +10,15 @@ function BreadCrumb() {
                     title: <Link to={'/'} >Home</Link>,
                 },
                 {
-                    title: <Link to={'/definizioneTempistiche'}> Definizione tempistiche</Link>,
+                    title: <Link to={'/definizioneTempistiche'}> Lorem</Link>,
                     path: '/definizioneTempistiche', 
                     children: [
                         {
-                            title: <Link to={'/validitaCampagna'}> Validità Campagna</Link>,
+                            title: <Link to={'/validitaCampagna'}> Ipsum</Link>,
                             path: '/validitaCampagna',
                         },
                         {
-                            title: <Link to={'/tempisticaProcessi'}> Tempistica Processi</Link>,
+                            title: <Link to={'/tempisticaProcessi'}> Dolor</Link>,
                             path: '/tempisticaProcessi',
                         },
                     ]               

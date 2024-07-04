@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace WebAppCRSAPiattaformaERM.Test.ModelsTests;
+namespace MinimalSPAwithAPIs.Test.ModelsTests;
 
 public class ModelsTests
 {
     [Theory]
-    [InlineData("WebAppCRSAPiattaformaERM", "WebAppCRSAPiattaformaERM.Models.DB")]
-    [InlineData("WebAppCRSAPiattaformaERM", "WebAppCRSAPiattaformaERM.Models.DTO")]
-    [InlineData("WebAppCRSAPiattaformaERM", "WebAppCRSAPiattaformaERM.Models.Filters")]
+    [InlineData("MinimalSPAwithAPIs", "MinimalSPAwithAPIs.Models.DB")]
+    [InlineData("MinimalSPAwithAPIs", "MinimalSPAwithAPIs.Models.DTO")]
+    [InlineData("MinimalSPAwithAPIs", "MinimalSPAwithAPIs.Models.Filters")]
     public void Models_Construct_OK(string assemblyName, params string[] namespaces)
     {
         Assembly assembly = Assembly.Load(assemblyName);

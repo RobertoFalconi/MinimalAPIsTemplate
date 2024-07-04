@@ -4,7 +4,7 @@
       "Default": "Error",
       "Microsoft": "Error",
       "Microsoft.Hosting.Lifetime": "Error",
-      "WebAppCRSAPiattaformaERM": "Information"
+      "MinimalSPAwithAPIs": "Information"
     }
   },
   "AllowedHosts": "*",

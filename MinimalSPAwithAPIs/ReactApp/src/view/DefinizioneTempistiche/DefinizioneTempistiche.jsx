@@ -24,7 +24,7 @@ function DefinizioneTempistiche() {
                                     }}
                                     cover={<img alt="example" src={myLogo} />}
                                 >
-                                    <Card.Meta title="Validità Campagna" />
+                                    <Card.Meta title="Lorem" />
                                 </Card>
                             </Link>
                             <Link to="/definizioneTempistiche/tempisticaProcessi">
@@ -36,7 +36,7 @@ function DefinizioneTempistiche() {
                                     }}
                                     cover={<img alt="example" src={myLogo} />}
                                 >
-                                    <Card.Meta title="Tempistica Processi" />
+                                    <Card.Meta title="Ipsum" />
                                 </Card>
                             </Link>
                         </div>

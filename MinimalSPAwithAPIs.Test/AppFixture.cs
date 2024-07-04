@@ -10,10 +10,10 @@ using Moq.Protected;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
-using WebAppCRSAPiattaformaERM.Extensions;
-using WebAppCRSAPiattaformaERM.Models.DB;
+using MinimalSPAwithAPIs.Extensions;
+using MinimalSPAwithAPIs.Models.DB;
 
-namespace WebAppCRSAPiattaformaERM.Test;
+namespace MinimalSPAwithAPIs.Test;
 
 public class AppFixture : IDisposable
 {
@@ -73,16 +73,16 @@ public class AppFixture : IDisposable
         return logger.Object;
     }
 
-    internal DS06017_crsa_questionarioContext DbContext
+    internal MyDbContext DbContext
     {
         get
         {
-            var options = new DbContextOptionsBuilder<DS06017_crsa_questionarioContext>()
+            var options = new DbContextOptionsBuilder<MyDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
 
-            DS06017_crsa_questionarioContext context = new(options);
+            MyDbContext context = new(options);
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();

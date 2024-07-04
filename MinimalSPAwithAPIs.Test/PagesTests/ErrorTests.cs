@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using WebAppCRSAPiattaformaERM.Pages;
-using WebAppCRSAPiattaformaERM.Test;
+using MinimalSPAwithAPIs.Pages;
+using MinimalSPAwithAPIs.Test;
 using Xunit;
 
-namespace WebAppCRSAPiattaformaERM.Test.PagesTests;
+namespace MinimalSPAwithAPIs.Test.PagesTests;
 
 public class ErrorModelTests
 {
