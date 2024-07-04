@@ -1,7 +1,7 @@
 import { Card, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import inpsLogo from '../../Assets/img/logo-inps-mobile.svg';
+import myLogo from '../../Assets/img/logo-my-mobile.svg';
 
 function CardHome() {
 
@@ -12,13 +12,13 @@ function CardHome() {
       {
             title: <>lorem ipsum</>,
             description: "lorem ipsum",
-        imgUrl: inpsLogo,
+        imgUrl: myLogo,
         link: "/definizioneTempistiche"
       },
       {
           title: <>lorem ipsum</>,
           description: "lorem ipsum",
-        imgUrl: inpsLogo,
+        imgUrl: myLogo,
         link: "/mappaturaProcessi"
       }
     ])
@@ -49,7 +49,7 @@ function CardHome() {
       <Card
         hoverable
         className="mt-5 cardPrincipale"
-        cover={<img className="imgPrincipale" alt="example" src={inpsLogo} />}
+        cover={<img className="imgPrincipale" alt="example" src={myLogo} />}
       >
         <Card.Meta title={<h4>MinimalSPAwithAPI</h4>} description={<>
           <div>

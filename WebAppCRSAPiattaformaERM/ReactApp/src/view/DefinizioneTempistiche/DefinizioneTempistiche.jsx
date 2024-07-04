@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'antd';
-import inpsLogo from '../../Assets/img/logo-inps-mobile.svg';
+import myLogo from '../../Assets/img/logo-my-mobile.svg';
 import BreadCrumb from '../../components/common/BreadCrumb';
 import { Link } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ function DefinizioneTempistiche() {
                                         display: 'inline-block',
                                         marginRight: 50,
                                     }}
-                                    cover={<img alt="example" src={inpsLogo} />}
+                                    cover={<img alt="example" src={myLogo} />}
                                 >
                                     <Card.Meta title="Validità Campagna" />
                                 </Card>
@@ -34,7 +34,7 @@ function DefinizioneTempistiche() {
                                         display: 'inline-block',
                                         width: 240,
                                     }}
-                                    cover={<img alt="example" src={inpsLogo} />}
+                                    cover={<img alt="example" src={myLogo} />}
                                 >
                                     <Card.Meta title="Tempistica Processi" />
                                 </Card>

@@ -1,37 +1,37 @@
 
 import { Input, Menu } from 'antd';
 import React, { useState } from 'react';
-import inpsLogo from "../../Assets/img/logo-inps.svg";
+import myLogo from "../../Assets/img/logo-my.svg";
 
 
 
 const items = [
     {
-        label: "Definizione tempistiche",
+        label: "Definizione",
         key: 'tempistiche',
     },
     {
-        label: "Mappatura Processi",
+        label: "Mappatura",
         key: 'mapProcessi',
     },
     {
-        label: "Gestione configurazioni campagna CRSA",
-        key: 'compagnaCRSA',
+        label: "MyMinimalSPAwithAPIs",
+        key: 'MyMinimalSPAwithAPIs',
     },
     {
-        label: "Campagna di control Risk Self Assessment",
-        key: 'CRSA',
+        label: "Campagna",
+        key: 'MyMinimalSPAwithAPIs',
     },
     {
-        label: "Monitoraggio utenti",
+        label: "Monitoraggio 1",
         key: 'monUtenti',
     },
     {
-        label: "Monitoraggio campagne",
+        label: "Monitoraggio 2",
         key: 'monCampagne',
     },
     {
-        label: "Statistiche e reportistica",
+        label: "Statistiche",
         key: 'statistiche',
     }
 ];
@@ -47,7 +47,7 @@ function BarraRicerca() {
     return (
         <>
             <div className='d-flex mt-4 mx-4'>
-                <img src={inpsLogo} alt="INPS logo" />
+                <img src={myLogo} alt="my logo" />
                 <div>
                     <Input styles={{ width: "20px" }} />
                 </div>
