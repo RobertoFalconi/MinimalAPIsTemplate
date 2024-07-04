@@ -25,14 +25,17 @@ public class ValidatorHandler<TRequest, TResponse> : IPipelineBehavior<TRequest,
             .Where(error => error != null)
             .ToList();
 
+        var numeroErrori = 0;
+
         if (failures.Any())
         {
             var errori = "Errori: ";
             foreach (var failure in failures)
             {
-                errori += $"{failure.ErrorMessage} ";
+                numeroErrori++;
+                errori += $"Errore {numeroErrori}: {failure.ErrorMessage} ";
             }
-            throw new ValidationException($"Errore nella validazione dei dati in {typeof(TRequest).Name}. {errori}.");
+            throw new ValidationException($"Errore nella validazione dei dati in {typeof(TRequest).Name}. {numeroErrori} {errori}.");
         }
 
         return await next();
