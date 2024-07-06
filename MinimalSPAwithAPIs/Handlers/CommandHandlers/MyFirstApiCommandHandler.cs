@@ -1,13 +1,13 @@
 ﻿namespace MinimalSPAwithAPIs.Handlers.CommandHandlers;
 
-public sealed record InserisciMyFirstApiCommand(MyFirstApiDTO model) : IRequest<IResult>;
-public sealed record AggiornaMyFirstApiCommand(MyFirstApiDTO model) : IRequest<IResult>;
-public sealed record RimuoviMyFirstApiCommand(int id) : IRequest<IResult>;
+public sealed record CreateMyFirstApiCommand(MyFirstApiDTO model) : IRequest<IResult>;
+public sealed record UpdateMyFirstApiCommand(MyFirstApiDTO model) : IRequest<IResult>;
+public sealed record DeleteMyFirstApiCommand(int id) : IRequest<IResult>;
 
 public sealed class MyFirstApiCommandHandler :
-        IRequestHandler<InserisciMyFirstApiCommand, IResult>,
-        IRequestHandler<AggiornaMyFirstApiCommand, IResult>,
-        IRequestHandler<RimuoviMyFirstApiCommand, IResult>
+        IRequestHandler<CreateMyFirstApiCommand, IResult>,
+        IRequestHandler<UpdateMyFirstApiCommand, IResult>,
+        IRequestHandler<DeleteMyFirstApiCommand, IResult>
 {
     private readonly ILogger<MyFirstApiCommandHandler> _logger;
 
@@ -22,7 +22,7 @@ public sealed class MyFirstApiCommandHandler :
         _mapper = mapper;
     }
 
-    public async Task<IResult> Handle(InserisciMyFirstApiCommand request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(CreateMyFirstApiCommand request, CancellationToken cancellationToken)
     {
 
         using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
@@ -51,7 +51,7 @@ public sealed class MyFirstApiCommandHandler :
         }
     }
 
-    public async Task<IResult> Handle(AggiornaMyFirstApiCommand request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(UpdateMyFirstApiCommand request, CancellationToken cancellationToken)
     {
         using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
         {
@@ -88,7 +88,7 @@ public sealed class MyFirstApiCommandHandler :
         }
     }
 
-    public async Task<IResult> Handle(RimuoviMyFirstApiCommand request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(DeleteMyFirstApiCommand request, CancellationToken cancellationToken)
     {
         using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
         {

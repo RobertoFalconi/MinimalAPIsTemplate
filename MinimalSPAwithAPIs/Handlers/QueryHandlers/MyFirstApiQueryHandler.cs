@@ -1,9 +1,9 @@
 ﻿namespace MinimalSPAwithAPIs.Handlers.QueryHandlers;
 
-public sealed record GetMyFirstApiQuery(MyFirstApiFilter filter) : IRequest<IResult>;
+public sealed record ReadMyFirstApiQuery(MyFirstApiFilter filter) : IRequest<IResult>;
 
 public sealed class MyFirstApiQueryHandler :
-    IRequestHandler<GetMyFirstApiQuery, IResult>
+    IRequestHandler<ReadMyFirstApiQuery, IResult>
 {
     private readonly ILogger<MyFirstApiQueryHandler> _logger;
 
@@ -15,7 +15,7 @@ public sealed class MyFirstApiQueryHandler :
         _db = db;
     }
 
-    public async Task<IResult> Handle(GetMyFirstApiQuery request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(ReadMyFirstApiQuery request, CancellationToken cancellationToken)
     {
         try
         {

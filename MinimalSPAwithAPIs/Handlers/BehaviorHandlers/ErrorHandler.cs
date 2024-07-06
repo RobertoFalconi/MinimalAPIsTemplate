@@ -34,7 +34,7 @@ public class ErrorHandler
 
             context.Response.ContentType = "application/json";
 
-            context.Response.StatusCode = ex.InnerException switch
+            context.Response.StatusCode = innerMostException switch
             {
                 ValidationException => (int)HttpStatusCode.BadRequest,
                 DbUpdateException => (int)HttpStatusCode.Conflict,

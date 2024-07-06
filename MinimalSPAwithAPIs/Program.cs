@@ -6,6 +6,13 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
+global using MinimalSPAwithAPIs.Extensions;
+global using MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+global using MinimalSPAwithAPIs.Handlers.CommandHandlers;
+global using MinimalSPAwithAPIs.Handlers.QueryHandlers;
+global using MinimalSPAwithAPIs.Models.DB;
+global using MinimalSPAwithAPIs.Models.DTO;
+global using MinimalSPAwithAPIs.Models.Filters;
 //global using Serilog;
 global using System.Linq.Dynamic.Core;
 global using System.Linq.Expressions;
@@ -15,15 +22,6 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-global using MinimalSPAwithAPIs.Extensions;
-global using MinimalSPAwithAPIs.Handlers.AuthenticationHandlers;
-global using MinimalSPAwithAPIs.Handlers.CommandHandlers;
-global using MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
-global using MinimalSPAwithAPIs.Handlers.QueryHandlers;
-global using MinimalSPAwithAPIs.Models.DB;
-global using MinimalSPAwithAPIs.Models.DTO;
-global using MinimalSPAwithAPIs.Models.Filters;
-global using MinimalSPAwithAPIs.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +29,12 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -45,7 +48,7 @@ builder.Services.AddValidators(Assembly.GetExecutingAssembly());
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    configuration.AddOpenBehavior(typeof(ValidatorHandler<,>));
+    configuration.AddOpenBehavior(typeof(ValidatorBehaviorHandler<,>));
 });
 
 builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>

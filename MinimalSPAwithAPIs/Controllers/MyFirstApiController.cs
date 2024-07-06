@@ -15,31 +15,32 @@ public class MyFirstApiController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
-    public IResult Get([FromQuery] MyFirstApiFilter filter)
+    [HttpPost]
+    public async Task<IResult> Post(MyFirstApiDTO model)
     {
-        var mediator = _mediator.Send(new GetMyFirstApiQuery(filter));
-        return mediator.Result;
+        var mediator = await _mediator.Send(new CreateMyFirstApiCommand(model));
+        return mediator;
     }
 
-    [HttpPost]
-    public IResult Post(MyFirstApiDTO model)
+    [HttpGet]
+    public async Task<IResult> Get([FromQuery] MyFirstApiFilter filter)
     {
-        var mediator = _mediator.Send(new InserisciMyFirstApiCommand(model));
-        return mediator.Result;
+        var mediator = await _mediator.Send(new ReadMyFirstApiQuery(filter));
+        return mediator;
     }
 
     [HttpPut]
-    public IResult Put(MyFirstApiDTO model)
+    [Authorize(AuthenticationSchemes = IdmAuthenticationOptions.DefaultScheme)]
+    public async Task<IResult> Put(MyFirstApiDTO model)
     {
-        var mediator = _mediator.Send(new AggiornaMyFirstApiCommand(model));
-        return mediator.Result;
+        var mediator = await _mediator.Send(new UpdateMyFirstApiCommand(model));
+        return mediator;
     }
 
     [HttpDelete]
-    public IResult Delete(int id)
+    public async Task<IResult> Delete(int id)
     {
-        var mediator = _mediator.Send(new RimuoviMyFirstApiCommand(id));
-        return mediator.Result;
+        var mediator = await _mediator.Send(new DeleteMyFirstApiCommand(id));
+        return mediator;
     }
 }
