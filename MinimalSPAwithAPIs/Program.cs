@@ -22,6 +22,7 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+using WebAppCRSAPiattaformaERM.Handlers.BehaviorHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,14 +49,15 @@ builder.Services.AddValidators(Assembly.GetExecutingAssembly());
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    configuration.AddOpenBehavior(typeof(ValidatorBehaviorHandler<,>));
+    configuration.AddOpenBehavior(typeof(ValidatorHandler<,>));
+    configuration.AddOpenBehavior(typeof(NotificationHandler<,>));
 });
 
 builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
 {
     builder.AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowAnyOrigin();
+           .AllowAnyHeader()
+           .AllowAnyOrigin();
 }));
 
 builder.Services.AddAuthentication(options =>
@@ -65,6 +67,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = IdmAuthenticationOptions.DefaultScheme;
 })
     .AddScheme<IdmAuthenticationOptions, IdmAuthenticationHandler>(IdmAuthenticationOptions.DefaultScheme, null);
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Role1Policy", policy =>
+        policy.Requirements.Add(new CurrentProfileRequirement(Roles.Role1)));
+builder.Services.AddSingleton<IAuthorizationHandler, CurrentProfileHandler>();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
 {

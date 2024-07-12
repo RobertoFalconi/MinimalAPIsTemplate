@@ -24,95 +24,82 @@ public sealed class MyFirstApiCommandHandler :
 
     public async Task<IResult> Handle(CreateMyFirstApiCommand request, CancellationToken cancellationToken)
     {
+        await using var dbContextTransaction = await _db.Database.BeginTransactionAsync();
 
-        using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
+        try
         {
-            try
-            {
-                var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
-                nuovoElemento.State = "A";
-                nuovoElemento.LastUpdateUser = "Temp";
-                nuovoElemento.LastUpdateDate = DateTime.Now;
-                nuovoElemento.LastUpdateApplication = "readytoworktemplate";
+            var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
+            nuovoElemento.State = "A";
+            nuovoElemento.LastUpdateUser = "Temp";
+            nuovoElemento.LastUpdateDate = DateTime.Now;
+            nuovoElemento.LastUpdateApplication = "readytoworktemplate";
 
-                await _db.MyFirstApiDb.AddAsync(nuovoElemento);
-                await _db.SaveChangesAsync();
-                await dbContextTransaction.CommitAsync();
+            await _db.MyFirstApiDb.AddAsync(nuovoElemento);
+            await _db.SaveChangesAsync();
+            await dbContextTransaction.CommitAsync();
 
-                return Results.Ok(nuovoElemento);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = ex.InnerException != null ? $"{ex.Message} Inner exception: {ex.InnerException.Message}" : ex.Message;
-                _logger.LogError(errorMessage);
-                await dbContextTransaction.RollbackAsync(cancellationToken);
-                return Results.BadRequest(errorMessage);
-            }
+            return Results.Ok(nuovoElemento);
+        }
+        catch (Exception)
+        {
+            await dbContextTransaction.RollbackAsync(cancellationToken);
+            throw;
         }
     }
 
     public async Task<IResult> Handle(UpdateMyFirstApiCommand request, CancellationToken cancellationToken)
     {
-        using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
+        await using var dbContextTransaction = await _db.Database.BeginTransactionAsync();
+
+        try
         {
-            try
-            {
-                var currentEntity = await _db.MyFirstApiDb.FindAsync(request.model.PrimaryKey);
-                
-                if (currentEntity != null)
-                {
-                    currentEntity.EndingDate = DateTime.Now;
-                    currentEntity.State = "C";
-                    _db.MyFirstApiDb.Update(currentEntity);
+            var currentEntity = await _db.MyFirstApiDb.FindAsync(request.model.PrimaryKey)
+                                ?? throw new KeyNotFoundException();
 
-                    var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
-                    nuovoElemento.State = "A";
-                    nuovoElemento.LastUpdateUser = "Temp";
-                    nuovoElemento.LastUpdateDate = DateTime.Now;
-                    nuovoElemento.LastUpdateApplication = "readytoworktemplate";
+            currentEntity.EndingDate = DateTime.Now;
+            currentEntity.State = "C";
+            _db.MyFirstApiDb.Update(currentEntity);
 
-                    await _db.MyFirstApiDb.AddAsync(nuovoElemento);
-                    await _db.SaveChangesAsync();
-                    await dbContextTransaction.CommitAsync();
-                }
+            var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
+            nuovoElemento.State = "A";
+            nuovoElemento.LastUpdateUser = "Temp";
+            nuovoElemento.LastUpdateDate = DateTime.Now;
+            nuovoElemento.LastUpdateApplication = "readytoworktemplate";
 
-                return Results.Ok();
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = ex.InnerException != null ? $"{ex.Message} Inner exception: {ex.InnerException.Message}" : ex.Message;
-                _logger.LogError(errorMessage);
-                await dbContextTransaction.RollbackAsync(cancellationToken);
-                return Results.BadRequest(errorMessage);
-            }
+            await _db.MyFirstApiDb.AddAsync(nuovoElemento);
+            await _db.SaveChangesAsync();
+            await dbContextTransaction.CommitAsync();
+
+            return Results.Ok();
+        }
+        catch (Exception)
+        {
+            await dbContextTransaction.RollbackAsync(cancellationToken);
+            throw;
         }
     }
 
     public async Task<IResult> Handle(DeleteMyFirstApiCommand request, CancellationToken cancellationToken)
     {
-        using (var dbContextTransaction = await _db.Database.BeginTransactionAsync())
+        await using var dbContextTransaction = await _db.Database.BeginTransactionAsync();
+
+        try
         {
-            try
-            {
-                var entityToDelete = await _db.MyFirstApiDb.FindAsync(request.id);
-                if (entityToDelete != null)
-                {
-                    entityToDelete.State = "C";
-                    _db.MyFirstApiDb.Update(entityToDelete);
+            var entityToDelete = await _db.MyFirstApiDb.FindAsync(request.id)
+                                ?? throw new KeyNotFoundException();
 
-                    await _db.SaveChangesAsync();
-                    await dbContextTransaction.CommitAsync();
-                }
+            entityToDelete.State = "C";
+            _db.MyFirstApiDb.Update(entityToDelete);
 
-                return Results.Ok();
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = ex.InnerException != null ? $"{ex.Message} Inner exception: {ex.InnerException.Message}" : ex.Message;
-                _logger.LogError(errorMessage);
-                await dbContextTransaction.RollbackAsync(cancellationToken);
-                return Results.BadRequest(errorMessage);
-            }
+            await _db.SaveChangesAsync();
+            await dbContextTransaction.CommitAsync();
+
+            return Results.Ok();
+        }
+        catch (Exception)
+        {
+            await dbContextTransaction.RollbackAsync(cancellationToken);
+            throw;
         }
     }
 }

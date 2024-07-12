@@ -17,33 +17,24 @@ public sealed class MyFirstApiQueryHandler :
 
     public async Task<IResult> Handle(ReadMyFirstApiQuery request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var query = _db.MyFirstApiDb;
+        var query = _db.MyFirstApiDb;
 
-            var filteredQuery = QueryableExtensions
-                .ApplyFilter(query, request.filter)
-                .Where(x => x.State != "C");
+        var filteredQuery = QueryableExtensions
+            .ApplyFilter(query, request.filter)
+            .Where(x => x.State != "C");
 
-            var totalCount = await filteredQuery
-                .CountAsync();
+        var totalCount = await filteredQuery
+            .CountAsync();
 
-            var results = await filteredQuery
-                .OrderBy((request.filter.OrderColumnName ?? $"{nameof(request.filter.PrimaryKey)}") + " " + (request.filter.OrderAscDesc ?? "asc"))
-                .Skip((request.filter.PageNumber - 1) * request.filter.PageSize)
-                .Take(request.filter.PageSize)
-                .ToListAsync();
+        var results = await filteredQuery
+            .OrderBy((request.filter.OrderColumnName ?? $"{nameof(request.filter.PrimaryKey)}") + " " + (request.filter.OrderAscDesc ?? "asc"))
+            .Skip((request.filter.PageNumber - 1) * request.filter.PageSize)
+            .Take(request.filter.PageSize)
+            .ToListAsync();
 
-            var pagedResponse =
-                new PagedResponse<MyFirstApiDb>(results, totalCount, request.filter.PageNumber, request.filter.PageSize);
+        var pagedResponse =
+            new PagedResponse<MyFirstApiDb>(results, totalCount, request.filter.PageNumber, request.filter.PageSize);
 
-            return Results.Ok(pagedResponse);
-        }
-        catch (Exception ex)
-        {
-            var errorMessage = ex.InnerException != null ? $"{ex.Message} Inner exception: {ex.InnerException.Message}" : ex.Message;
-            _logger.LogError(errorMessage);
-            return Results.BadRequest(errorMessage);
-        }
+        return Results.Ok(pagedResponse);
     }
 }

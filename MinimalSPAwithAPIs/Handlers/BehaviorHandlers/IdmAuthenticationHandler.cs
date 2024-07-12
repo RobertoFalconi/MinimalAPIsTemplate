@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
 
 public class IdmAuthenticationOptions : AuthenticationSchemeOptions
 {
@@ -16,6 +14,7 @@ public struct IdmClaimTypes
 {
     public const string Name = "Mario";
     public const string Surname = "Rossi";
+    public const string ProfiloCorrente = "ProfiloCorrente";
 }
 
 public class IdmAuthenticationHandler : AuthenticationHandler<IdmAuthenticationOptions>
@@ -70,7 +69,7 @@ public class IdmAuthenticationHandler : AuthenticationHandler<IdmAuthenticationO
 
         if (!myRoles.Exists(x => allowedRoles.Exists(y => x.Contains(y))))
         {
-            return AuthenticateResult.Fail($"Utente non autorizzato");
+            return AuthenticateResult.Fail($"User not authenticated");
         }
 
         var claims = new List<Claim>()
@@ -95,11 +94,5 @@ public class IdmAuthenticationHandler : AuthenticationHandler<IdmAuthenticationO
         return AuthenticateResult.Success
             (new AuthenticationTicket(claimsPrincipal,
             Scheme.Name));
-    }
-
-    protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
-    {
-        await base.HandleChallengeAsync(properties);
-        Response.Redirect("/Unauthorized");
     }
 }

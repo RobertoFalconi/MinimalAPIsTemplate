@@ -30,7 +30,6 @@ public class MyFirstApiController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(AuthenticationSchemes = IdmAuthenticationOptions.DefaultScheme)]
     public async Task<IResult> Put(MyFirstApiDTO model)
     {
         var mediator = await _mediator.Send(new UpdateMyFirstApiCommand(model));
