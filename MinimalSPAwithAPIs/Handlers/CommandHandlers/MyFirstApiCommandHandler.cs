@@ -28,13 +28,13 @@ public sealed class MyFirstApiCommandHandler :
 
         try
         {
-            var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
+            var nuovoElemento = _mapper.Map<MyFirstApiDbTable>(request.model);
             nuovoElemento.State = "A";
             nuovoElemento.LastUpdateUser = "Temp";
             nuovoElemento.LastUpdateDate = DateTime.Now;
             nuovoElemento.LastUpdateApplication = "readytoworktemplate";
 
-            await _db.MyFirstApiDb.AddAsync(nuovoElemento);
+            await _db.MyFirstApiDbTable.AddAsync(nuovoElemento);
             await _db.SaveChangesAsync();
             await dbContextTransaction.CommitAsync();
 
@@ -53,20 +53,20 @@ public sealed class MyFirstApiCommandHandler :
 
         try
         {
-            var currentEntity = await _db.MyFirstApiDb.FindAsync(request.model.PrimaryKey)
+            var currentEntity = await _db.MyFirstApiDbTable.FindAsync(request.model.PrimaryKey)
                                 ?? throw new KeyNotFoundException();
 
             currentEntity.EndingDate = DateTime.Now;
             currentEntity.State = "C";
-            _db.MyFirstApiDb.Update(currentEntity);
+            _db.MyFirstApiDbTable.Update(currentEntity);
 
-            var nuovoElemento = _mapper.Map<MyFirstApiDb>(request.model);
+            var nuovoElemento = _mapper.Map<MyFirstApiDbTable>(request.model);
             nuovoElemento.State = "A";
             nuovoElemento.LastUpdateUser = "Temp";
             nuovoElemento.LastUpdateDate = DateTime.Now;
             nuovoElemento.LastUpdateApplication = "readytoworktemplate";
 
-            await _db.MyFirstApiDb.AddAsync(nuovoElemento);
+            await _db.MyFirstApiDbTable.AddAsync(nuovoElemento);
             await _db.SaveChangesAsync();
             await dbContextTransaction.CommitAsync();
 
@@ -85,11 +85,11 @@ public sealed class MyFirstApiCommandHandler :
 
         try
         {
-            var entityToDelete = await _db.MyFirstApiDb.FindAsync(request.id)
+            var entityToDelete = await _db.MyFirstApiDbTable.FindAsync(request.id)
                                 ?? throw new KeyNotFoundException();
 
             entityToDelete.State = "C";
-            _db.MyFirstApiDb.Update(entityToDelete);
+            _db.MyFirstApiDbTable.Update(entityToDelete);
 
             await _db.SaveChangesAsync();
             await dbContextTransaction.CommitAsync();

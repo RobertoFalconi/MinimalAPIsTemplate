@@ -6,7 +6,7 @@ public class PagedResponse<T>
     public int PageSize { get; set; }
     public int TotalPages { get { return (int)Math.Ceiling(((double)TotalCount / (double)PageSize)); } }
     public int TotalCount { get; set; }
-    public ICollection<T> Results { get; set; }
+    public IEnumerable<T> Results { get; set; }
 
     public PagedResponse()
     {

@@ -1,9 +1,11 @@
 global using AutoMapper;
+global using Dapper;
 global using FluentValidation;
 global using MediatR;
 global using Microsoft.AspNetCore.Authentication;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
 global using MinimalSPAwithAPIs.Extensions;
@@ -13,6 +15,7 @@ global using MinimalSPAwithAPIs.Handlers.QueryHandlers;
 global using MinimalSPAwithAPIs.Models.DB;
 global using MinimalSPAwithAPIs.Models.DTO;
 global using MinimalSPAwithAPIs.Models.Filters;
+global using System.Data;
 //global using Serilog;
 global using System.Linq.Dynamic.Core;
 global using System.Linq.Expressions;
@@ -22,7 +25,7 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-using WebAppCRSAPiattaformaERM.Handlers.BehaviorHandlers;
+global using WebAppCRSAPiattaformaERM.Handlers.BehaviorHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +80,8 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("MinimalSPAwithAPIs")!);
 });
+
+builder.Services.AddScoped<IDbConnection>((sp) => new SqlConnection(builder.Configuration.GetConnectionString("CRSAPiattaformaERM")));
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

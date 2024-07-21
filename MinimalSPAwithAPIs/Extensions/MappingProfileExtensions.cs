@@ -4,10 +4,10 @@ public class MappingProfileExtensions : Profile
 {
     public MappingProfileExtensions()
     {
-        CreateMap<MyFirstApiDTO, MyFirstApiDb>()
+        CreateMap<MyFirstApiDTO, MyFirstApiDbTable>()
             .ForMember(dest => dest.PrimaryKey, opt => opt.Ignore())
             .ReverseMap();
-        CreateMap<MyUsersDTO, MyUsersDb>()
+        CreateMap<MyUsersDTO, MyUsersDbTable>()
             .ForMember(dest => dest.PrimaryKey, opt => opt.Ignore())
             .ReverseMap();
     }

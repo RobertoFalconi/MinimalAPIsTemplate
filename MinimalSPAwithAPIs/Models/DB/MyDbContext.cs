@@ -11,9 +11,9 @@ public partial class MyDbContext : DbContext
     {
     }
 
-    public virtual DbSet<MyFirstApiDb> MyFirstApiDb { get; set; }
+    public virtual DbSet<MyFirstApiDbTable> MyFirstApiDbTable { get; set; }
 
-    public virtual DbSet<MyUsersDb> MyUsers { get; set; }
+    public virtual DbSet<MyUsersDbTable> MyUsersDbTable { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -36,7 +36,7 @@ public partial class MyDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<MyUsersDb>(entity =>
+        modelBuilder.Entity<MyUsersDbTable>(entity =>
         {
             entity.HasKey(e => e.PrimaryKey).HasName("PrimaryKey");
 

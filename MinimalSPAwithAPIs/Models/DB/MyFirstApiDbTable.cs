@@ -1,6 +1,6 @@
 ﻿namespace MinimalSPAwithAPIs.Models.DB;
 
-public partial class MyFirstApiDb
+public partial class MyFirstApiDbTable
 {
     public int PrimaryKey { get; set; }
 
