@@ -1,4 +1,4 @@
-﻿namespace MinimalAPIs.Handlers.ConfigurationHandlers;
+﻿namespace MinimalAPIs.Handlers.ServiceHandlers;
 
 public sealed record Notification(string Message) : INotification;
 
