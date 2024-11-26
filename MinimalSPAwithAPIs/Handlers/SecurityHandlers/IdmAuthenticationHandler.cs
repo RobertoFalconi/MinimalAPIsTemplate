@@ -1,4 +1,4 @@
-﻿namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Handlers.SecurityHandlers;
 
 public class IdmAuthenticationOptions : AuthenticationSchemeOptions
 {

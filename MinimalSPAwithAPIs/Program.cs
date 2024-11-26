@@ -8,10 +8,12 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Data.SqlClient;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
+global using MinimalSPAwithAPIs.Behaviors;
 global using MinimalSPAwithAPIs.Extensions;
-global using MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
 global using MinimalSPAwithAPIs.Handlers.CommandHandlers;
 global using MinimalSPAwithAPIs.Handlers.QueryHandlers;
+global using MinimalSPAwithAPIs.Handlers.SecurityHandlers;
+global using MinimalSPAwithAPIs.Middlewares;
 global using MinimalSPAwithAPIs.Models.DB;
 global using MinimalSPAwithAPIs.Models.DTO;
 global using MinimalSPAwithAPIs.Models.Filters;
@@ -25,7 +27,6 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-global using WebAppCRSAPiattaformaERM.Handlers.BehaviorHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,8 +53,8 @@ builder.Services.AddValidators(Assembly.GetExecutingAssembly());
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    configuration.AddOpenBehavior(typeof(ValidatorHandler<,>));
-    configuration.AddOpenBehavior(typeof(NotificationHandler<,>));
+    configuration.AddOpenBehavior(typeof(ValidatorBehavior<,>));
+    configuration.AddOpenBehavior(typeof(NotificationBehavior<,>));
 });
 
 builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
@@ -98,7 +99,7 @@ app.UseStaticFiles();
 //app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseCors("CorsPolicy");
-app.UseMiddleware<ErrorHandler>();
+app.UseMiddleware<ErrorMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

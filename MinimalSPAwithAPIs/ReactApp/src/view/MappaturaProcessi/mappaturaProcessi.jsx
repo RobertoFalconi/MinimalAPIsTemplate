@@ -9,55 +9,55 @@ function MappaturaProcessi() {
     const dataSource = [
         {
             key: '1',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 1',
+            Process: 'Process 1',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
         {
             key: '2',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 2',
+            Process: 'Process 2',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
         {
             key: '3',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 3',
+            Process: 'Process 3',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
         {
             key: '4',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 4',
+            Process: 'Process 4',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
         {
             key: '5',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 5',
+            Process: 'Process 5',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
         {
             key: '5',
-            direzione: 'John Brown',
-            area_dirigenziale: 'area dirigenziale',
+            Name: 'John Brown',
+            area_dirigenziale: 'Fiscal code',
             area_prodotto: 'New York No. 1 Lake Park',
-            processo: 'processo 6',
+            Process: 'Process 6',
             data_inizio: '2021-01-01',
             data_fine: '2021-01-31',
         },
@@ -66,40 +66,40 @@ function MappaturaProcessi() {
 
     const columns = [
         {
-            title: 'Direzione',
-            dataIndex: 'direzione',
-            key: 'direzione',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            title: 'Name',
+            dataIndex: 'Name',
+            key: 'Name',
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
-            title: 'Area dirigenziale',
+            title: 'Fiscal code',
             dataIndex: 'area_dirigenziale',
             key: 'area_dirigenziale',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
-            title: 'Area di prodotto',
+            title: 'Place',
             dataIndex: 'area_prodotto',
             key: 'area_prodotto',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
-            title: 'Processo',
-            dataIndex: 'processo',
-            key: 'processo',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            title: 'Process',
+            dataIndex: 'Process',
+            key: 'Process',
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
             title: 'Data inizio',
             dataIndex: 'data_inizio',
             key: 'data_inizio',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
             title: 'Data fine',
             dataIndex: 'data_fine',
             key: 'data_fine',
-            sorter: (a, b) => a.direzione.localeCompare(b.direzione),
+            sorter: (a, b) => a.Name.localeCompare(b.Name),
         },
         {
             title: 'Azioni',
@@ -118,9 +118,6 @@ function MappaturaProcessi() {
         <div className="row">
             <div className="col-12">
                 <BreadCrumb />
-                <div className="d-flex justify-content-center mt-5">
-                    <Button type="primary" className="mr-2">Aggiungi Mappatura</Button>
-                </div>
                 <Form
                     name="ricerca"
                     layout="vertical"
@@ -129,7 +126,7 @@ function MappaturaProcessi() {
                 >
                     <Form.Item
                         className="mb-4"
-                        label="Direzione di riferimento"
+                        label="Name"
                         style={{
                             display: 'inline-block',
                             width: 'calc(50% - 12px)',
@@ -149,7 +146,7 @@ function MappaturaProcessi() {
                     </Form.Item>
                     <Form.Item
                         name="area_dirigenziale"
-                        label="Area dirigenziale"
+                        label="Fiscal code"
                         style={{
                             display: 'inline-block',
                             width: 'calc(50% - 12px)',
@@ -167,7 +164,7 @@ function MappaturaProcessi() {
                     </Form.Item>
                     <Form.Item
                         name="area_prodotto"
-                        label="Area di prodotto"
+                        label="Place"
                         style={{
                             display: 'inline-block',
                             width: 'calc(50% - 12px)',
@@ -185,8 +182,8 @@ function MappaturaProcessi() {
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name="processo"
-                        label="Processo"
+                        name="Process"
+                        label="Process"
                         style={{
                             display: 'inline-block',
                             width: 'calc(50% - 12px)',

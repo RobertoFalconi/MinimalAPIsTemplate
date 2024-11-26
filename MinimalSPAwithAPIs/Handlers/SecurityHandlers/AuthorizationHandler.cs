@@ -1,4 +1,4 @@
-﻿namespace WebAppCRSAPiattaformaERM.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Handlers.SecurityHandlers;
 
 public class CurrentProfileHandler : AuthorizationHandler<CurrentProfileRequirement>
 {

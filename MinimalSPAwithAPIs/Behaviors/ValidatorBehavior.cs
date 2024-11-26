@@ -1,12 +1,12 @@
-﻿namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Behaviors;
 
-public class ValidatorHandler<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<ValidatorHandler<TRequest, TResponse>> _logger;
+    private readonly ILogger<ValidatorBehavior<TRequest, TResponse>> _logger;
 
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidatorHandler(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidatorHandler<TRequest, TResponse>> logger)
+    public ValidatorBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidatorBehavior<TRequest, TResponse>> logger)
     {
         _validators = validators;
         _logger = logger;

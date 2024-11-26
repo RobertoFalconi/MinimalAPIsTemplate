@@ -1,11 +1,11 @@
-﻿namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Middlewares;
 
-public class ErrorHandler
+public class ErrorMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ErrorHandler> _logger;
+    private readonly ILogger<ErrorMiddleware> _logger;
 
-    public ErrorHandler(RequestDelegate next, ILogger<ErrorHandler> logger)
+    public ErrorMiddleware(RequestDelegate next, ILogger<ErrorMiddleware> logger)
     {
         _next = next;
         _logger = logger;

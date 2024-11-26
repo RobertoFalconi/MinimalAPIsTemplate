@@ -1,11 +1,11 @@
-﻿namespace MinimalSPAwithAPIs.Handlers.BehaviorHandlers;
+﻿namespace MinimalSPAwithAPIs.Behaviors;
 
-public class NotificationHandler<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class NotificationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     private readonly MyDbContext _dbContext;
 
-    public NotificationHandler(MyDbContext dbContext)
+    public NotificationBehavior(MyDbContext dbContext)
     {
         _dbContext = dbContext;
     }
