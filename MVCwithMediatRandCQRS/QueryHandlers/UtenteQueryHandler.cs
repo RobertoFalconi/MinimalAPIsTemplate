@@ -1,11 +1,11 @@
-﻿namespace MVCwithMediatRandCQRS.Web.Handlers.QueryHandlers;
+﻿namespace MVCwithMediatRandCQRS.QueryHandlers;
 
-public sealed record GetUtentiQuery(UtenteServiceRequest ServiceRequest) : IRequest<List<UtenteEntity>>;
-public sealed record GetUtenteByIdQuery(UtenteServiceRequest ServiceRequest) : IRequest<UtenteEntity>;
+public sealed record GetUtentiQuery() : IRequest<List<UtenteViewModel>>;
+public sealed record GetUtenteByIdQuery(int Id) : IRequest<UtenteViewModel>;
 
 public sealed class UtenteQueryHandler :
-    IRequestHandler<GetUtentiQuery, List<UtenteEntity>>,
-    IRequestHandler<GetUtenteByIdQuery, UtenteEntity>
+    IRequestHandler<GetUtentiQuery, List<UtenteViewModel>>,
+    IRequestHandler<GetUtenteByIdQuery, UtenteViewModel>
 {
     private readonly IConfiguration _configuration;
 
@@ -20,12 +20,12 @@ public sealed class UtenteQueryHandler :
         _connectionString = configuration.GetConnectionString("MVCwithMediatRandCQRS.DB.Main")!;
     }
 
-    public async Task<List<UtenteEntity>> Handle(GetUtentiQuery request, CancellationToken cancellationToken)
+    public async Task<List<UtenteViewModel>> Handle(GetUtentiQuery request, CancellationToken cancellationToken)
     {
         var query = $@" SELECT *
                         FROM Utenti ";
 
-        var utenti = new List<UtenteEntity>();
+        var utenti = new List<UtenteViewModel>();
 
         //using (var conn = new SqlConnection(_connectionString))
         //{
@@ -35,14 +35,18 @@ public sealed class UtenteQueryHandler :
         return utenti;
     }
 
-    public async Task<UtenteEntity> Handle(GetUtenteByIdQuery request, CancellationToken cancellationToken)
+    public async Task<UtenteViewModel> Handle(GetUtenteByIdQuery request, CancellationToken cancellationToken)
     {
         var query = $@" SELECT *
                         FROM Utenti 
-                        WHERE Id = {request.ServiceRequest.Id} ";
+                        WHERE Id = {request.Id} ";
 
-        var utente = new UtenteEntity();
+        var utente = new UtenteViewModel();
 
+        // MOCK
+        utente.Nome = "Mario";
+        utente.Cognome = "Rossi";
+        utente.Email = "mariorossi@prova.it";
         //using (var conn = new SqlConnection(_connectionString))
         //{
         //    utente = await conn.QuerySingleOrDefaultAsync<UtenteEntity>(query, new { request });

@@ -14,15 +14,25 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var request = new UtenteServiceRequest();
-        request.Id = 1;
-        var utenteEntity = await _mediator.Send(new GetUtenteByIdQuery(request));
+        var vm = await _mediator.Send(new GetUtenteByIdQuery(1));
 
-        var utenteViewModel = new UtenteViewModel();
-        utenteViewModel.Nome = utenteEntity.Nome;
-
-        return View(utenteViewModel);
+        return View(vm);
     }
+
+    // C#
+    [HttpPost]
+    public async Task<IActionResult> CreateUser(string Nome, string Cognome, string Email)
+    {
+        if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Cognome) || string.IsNullOrWhiteSpace(Email))
+        {
+            return BadRequest("Tutti i campi sono obbligatori.");
+        }
+
+        var userId = await _mediator.Send(new CreateUtenteCommand(Nome, Cognome, Email));
+
+        return Json(new { id = userId });
+    }
+
 
     public IActionResult Privacy()
     {

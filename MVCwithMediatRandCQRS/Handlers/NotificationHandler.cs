@@ -1,11 +1,11 @@
-﻿namespace MVCwithMediatRandCQRS.Behaviors;
+﻿namespace MVCwithMediatRandCQRS.Handlers;
 
-public class NotificationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class NotificationHandler<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
     //private readonly MyDbContext _dbContext;
 
-    public NotificationBehavior(/*MyDbContext dbContext*/)
+    public NotificationHandler(/*MyDbContext dbContext*/)
     {
         //_dbContext = dbContext;
     }

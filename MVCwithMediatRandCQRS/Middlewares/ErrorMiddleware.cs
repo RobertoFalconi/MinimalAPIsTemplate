@@ -1,4 +1,4 @@
-﻿namespace MVCwithMediatRandCQRS.Web.Middlewares;
+﻿namespace MVCwithMediatRandCQRS.Middlewares;
 
 public class ErrorMiddleware
 {

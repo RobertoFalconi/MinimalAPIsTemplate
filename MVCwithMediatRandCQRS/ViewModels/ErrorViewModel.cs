@@ -1,4 +1,4 @@
-namespace MVCwithMediatRandCQRS.Web.Models.ViewModels;
+namespace MVCwithMediatRandCQRS.ViewModels;
 
 public class ErrorViewModel
 {

@@ -1,4 +1,4 @@
-﻿namespace MVCwithMediatRandCQRS.Web.Models.DbModels;
+﻿namespace MVCwithMediatRandCQRS.DbModels;
 
 public partial class MyDbContext : DbContext
 {
@@ -39,9 +39,6 @@ public partial class MyDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("Id");
             entity.Property(e => e.Nome).HasMaxLength(20);
             entity.Property(e => e.Cognome).HasMaxLength(20);
-            entity.Property(e => e.Telefono).HasMaxLength(20);
-            entity.Property(e => e.CodiceFiscale).HasMaxLength(20);
-            entity.Property(e => e.Ruolo).HasMaxLength(20);
             entity.Property(e => e.Email).HasMaxLength(20);
 
         });

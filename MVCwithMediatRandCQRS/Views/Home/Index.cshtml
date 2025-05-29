@@ -6,3 +6,91 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<!-- Area per messaggi di conferma -->
+<div class="mt-3 text-center">
+    <div id="successMessage" class="alert alert-success d-none" role="alert">
+        Utente creato con successo! ID: <span id="userId"></span>
+    </div>
+</div>
+
+<!-- Bottone per aprire la modale -->
+<div class="mt-5 text-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal">
+        Inserisci un nuovo utente
+    </button>
+</div>
+
+<!-- Modale Bootstrap -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="userModalLabel">Inserisci un nuovo utente</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-group mb-3">
+                        <label for="Nome">Nome</label>
+                        <input type="text" class="form-control" id="Nome" name="Nome" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Cognome">Cognome</label>
+                        <input type="text" class="form-control" id="Cognome" name="Cognome" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Email">Email</label>
+                        <input type="email" class="form-control" id="Email" name="Email" required />
+                    </div>
+                    <div class="modal-footer px-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-primary">Aggiungi Utente</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#userForm").submit(function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    Nome: $("#Nome").val(),
+                    Cognome: $("#Cognome").val(),
+                    Email: $("#Email").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("CreateUser", "Home")",
+                    data: formData,
+                    success: function (response) {
+                        // Chiudi la modale
+                        $("#userModal").modal("hide");
+
+                        // Mostra il messaggio di successo con l'ID
+                        $("#userId").text(response.id);
+                        $("#successMessage").removeClass("d-none");
+
+                        // Resetta il form
+                        $("#userForm")[0].reset();
+
+                        // Nascondi il messaggio dopo 5 secondi
+                        setTimeout(function() {
+                            $("#successMessage").addClass("d-none");
+                        }, 5000);
+                    },
+                    error: function (error) {
+                        console.error("Errore durante la creazione dell'utente:", error);
+                        alert("Si è verificato un errore durante la creazione dell'utente.");
+                    }
+                });
+            });
+        });
+    </script>
+}

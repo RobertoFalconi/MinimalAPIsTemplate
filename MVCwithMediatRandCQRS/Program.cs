@@ -1,13 +1,12 @@
 global using MediatR;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
-global using MVCwithMediatRandCQRS.Behaviors;
-global using MVCwithMediatRandCQRS.Web.Handlers.QueryHandlers;
-global using MVCwithMediatRandCQRS.Web.Middlewares;
-global using MVCwithMediatRandCQRS.Web.Models.DbModels;
-global using MVCwithMediatRandCQRS.Web.Models.Entities;
-global using MVCwithMediatRandCQRS.Web.Models.ServiceRequests;
-global using MVCwithMediatRandCQRS.Web.Models.ViewModels;
+global using MVCwithMediatRandCQRS.CommandHandlers;
+global using MVCwithMediatRandCQRS.DbModels;
+global using MVCwithMediatRandCQRS.Handlers;
+global using MVCwithMediatRandCQRS.Middlewares;
+global using MVCwithMediatRandCQRS.QueryHandlers;
+global using MVCwithMediatRandCQRS.ViewModels;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics;
 global using System.Net;
@@ -21,7 +20,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    configuration.AddOpenBehavior(typeof(NotificationBehavior<,>));
+    configuration.AddOpenBehavior(typeof(NotificationHandler<,>));
 });
 
 builder.Services.AddDbContext<MyDbContext>(options =>
