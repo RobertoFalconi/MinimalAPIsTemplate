@@ -1,0 +1,6 @@
+@GPTOpenAIwithDotNetAspireAPIs_HostAddress = http://localhost:5182
+
+GET {{GPTOpenAIwithDotNetAspireAPIs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

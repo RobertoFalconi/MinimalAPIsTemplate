@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalSPAwithAPIs.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCwithMediatRandCQRS", "MVCwithMediatRandCQRS\MVCwithMediatRandCQRS.csproj", "{2F647CE7-83AC-4875-B195-D7C6C1D28FAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPTOpenAIwithDotNetAspireAPIs", "GPTOpenAIwithDotNetAspireAPIs\GPTOpenAIwithDotNetAspireAPIs.csproj", "{A847A7CA-1F94-2C66-7C92-5358DD1EB2CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalAPIs.AppHost", "MinimalAPIs.AppHost\MinimalAPIs.AppHost.csproj", "{EA7CB205-FBAD-43AA-8854-8EAF530E1AB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalAPIs.ServiceDefaults", "MinimalAPIs.ServiceDefaults\MinimalAPIs.ServiceDefaults.csproj", "{F2E43216-30D7-2B90-BB31-915E4203E223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +39,18 @@ Global
 		{2F647CE7-83AC-4875-B195-D7C6C1D28FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F647CE7-83AC-4875-B195-D7C6C1D28FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F647CE7-83AC-4875-B195-D7C6C1D28FAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A847A7CA-1F94-2C66-7C92-5358DD1EB2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A847A7CA-1F94-2C66-7C92-5358DD1EB2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A847A7CA-1F94-2C66-7C92-5358DD1EB2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A847A7CA-1F94-2C66-7C92-5358DD1EB2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA7CB205-FBAD-43AA-8854-8EAF530E1AB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA7CB205-FBAD-43AA-8854-8EAF530E1AB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA7CB205-FBAD-43AA-8854-8EAF530E1AB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA7CB205-FBAD-43AA-8854-8EAF530E1AB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2E43216-30D7-2B90-BB31-915E4203E223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2E43216-30D7-2B90-BB31-915E4203E223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2E43216-30D7-2B90-BB31-915E4203E223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2E43216-30D7-2B90-BB31-915E4203E223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
