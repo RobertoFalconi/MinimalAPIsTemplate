@@ -1,5 +1,5 @@
 # MinimalAPIsTemplate
-A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lots of ready-to-go examples, including CQRS and Mediator patterns, middlewares, first-party and third-parties packages, OAuth 2.0 Authentication using JSON Web Algorithms and Bearer Tokens (JWA, JWT, JWS, JWE, JOSE).  
+A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lots of ready-to-go examples, including OpenAI APIs, CQRS and Mediator patterns, middlewares, first-party and third-parties packages, OAuth 2.0 Authentication using JSON Web Algorithms and Bearer Tokens (JWA, JWT, JWS, JWE, JOSE). 
 
 ### NuGet link:  
 https://www.nuget.org/packages/Fucu.MinimalAPIsTemplate  
@@ -25,6 +25,17 @@ https://www.nuget.org/packages/Fucu.MinimalAPIsTemplate
 - **NLog** and JSON console and DB logs  
 - **OpenAPI Swagger** using **Swashbuckle**, with Schemas, API definitions, authentication button etc.  
 - **StopWatch** for benchmarks and timing running methods  
+
+## OpenAI APIs examples ready-to-go:
+This template includes ready-to-use integration with OpenAI APIs, designed for rapid prototyping and experimentation.  
+These examples are designed to be minimal, modular, and production-ready. Perfect for learning, testing, or building real-world AI-powered applications.
+
+- **OpenAICommandHandler**: A preconfigured command handler service to interact with OpenAI endpoints
+- **Dependency Injection**: Easily integrate `OpenAICommandHandler` with MediatR and the CQRS pattern
+- **Configuration**: API key and default parameters managed via `appsettings.json` for secure and flexible setup
+- **Sample Endpoints**: Accept simple text, JSON, or text files (e.g., log files)
+- **Error Handling**: Structured error responses for API failures, rate limits, or invalid inputs
+- **Extensibility**: Easily extend to support different models with minimal changes
 
 ## AuthN and AuthZ examples ready-to-go:  
 - JWT unsigned and not encrypted for basic knowledge  
