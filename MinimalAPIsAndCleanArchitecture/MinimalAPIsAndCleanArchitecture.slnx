@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MinimalAPIsAndCleanArchitecture.Core/MinimalAPIsAndCleanArchitecture.Core.csproj" />
+  <Project Path="MinimalAPIsAndCleanArchitecture.Infrastructure/MinimalAPIsAndCleanArchitecture.Infrastructure.csproj" />
+  <Project Path="MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture.csproj" />
+</Solution>
