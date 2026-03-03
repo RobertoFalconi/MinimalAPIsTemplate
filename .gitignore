@@ -1,0 +1,14 @@
+﻿################################################################################
+# Il file gitignore è stato creato automaticamente da Microsoft(R) Visual Studio.
+################################################################################
+
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture.Infrastructure/bin/Debug/net10.0
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture.Infrastructure/obj
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture.Core/bin/Debug/net10.0
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture.Core/obj
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture/bin/Debug/net10.0
+/MinimalAPIsAndCleanArchitecture/MinimalAPIsAndCleanArchitecture/obj
+/MinimalAPIsAndCleanArchitecture/.vs
+/MinimalAPIsAndCleanArchitecture/.vs/
+/MinimalAPIsAndCleanArchitecture/.vs/*
+/MinimalAPIsAndCleanArchitecture/.vs/MinimalAPIsAndCleanArchitecture.slnx/v18/DocumentLayout.json
