@@ -1,94 +1,177 @@
-# MinimalAPIsTemplate
-A comprehensive and fully functional ASP.NET Core Minimal APIs template, with lots of ready-to-go examples, including OpenAI APIs, CQRS and Mediator patterns, middlewares, first-party and third-parties packages, OAuth 2.0 Authentication using JSON Web Algorithms and Bearer Tokens (JWA, JWT, JWS, JWE, JOSE). 
+# MinimalAPIs Template
 
-### NuGet link:  
-https://www.nuget.org/packages/Fucu.MinimalAPIsTemplate  
-  
-## Examples of services and middlewares in this template:  
-- **Architecture** based on the Minimal APIs concept, with endpoints and route handlers, to easily implement Mediator, CQRS and Event-Sourcing patterns and Microservices architectures  
-- Asynchronous service calls with **Dependency Injection (DI)** for Singleton, Transient and Scoped services  
-- **Authentication** with JWT, JWS, JWE and JOSE  
-- **Authorization** with additional custom policies using Authorization Handler
-- **CQRS** pattern to separates queries (read) and commands (write) operations on data into two different models  
-- **Dapper** ORM for mapping SQL to objects and viceversa, with common **SQL** language and **SqlClient's SqlConnection**  
-- **Docker** container deployment  
-- **Entity Framework Core** for mapping SQL to objects and viceversa, with **LINQ** and **DbContextFactory**  
-- **Exception Handler** and error handling
-- **Fluent Validation** for validating models and JSON body input  
-- **GZip Stream** compression and decompression  
-- **Hangfire** batch and job automations  
-- **HealthChecks** health monitoring  
-- **HSTS** and **HTTPS** redirection  
-- **HttpClientFactory** with HTTP connection pooling  
-- **MediatR** for decoupling, reduce boilerplate code, and easy implement **Mediator**, **CQRS**, **Event-Sourcing** patterns  
-- **Multiple Environments** usage (Development, Staging, Production and custom)  
-- **NLog** and JSON console and DB logs  
-- **OpenAPI Swagger** using **Swashbuckle**, with Schemas, API definitions, authentication button etc.  
-- **StopWatch** for benchmarks and timing running methods  
+A production-ready template for building **.NET 10 Minimal APIs** following **Clean Architecture**, **Domain-Driven Design (DDD)**, and **CQRS** — without any external mediator libraries.
 
-## OpenAI APIs examples ready-to-go:
-This template includes ready-to-use integration with OpenAI APIs, designed for rapid prototyping and experimentation.  
-These examples are designed to be minimal, modular, and production-ready. Perfect for learning, testing, or building real-world AI-powered applications.
+---
 
-- **OpenAICommandHandler**: A preconfigured command handler service to interact with OpenAI endpoints
-- **Dependency Injection**: Easily integrate `OpenAICommandHandler` with MediatR and the CQRS pattern
-- **Configuration**: API key and default parameters managed via `appsettings.json` for secure and flexible setup
-- **Sample Endpoints**: Accept simple text, JSON, or text files (e.g., log files)
-- **Error Handling**: Structured error responses for API failures, rate limits, or invalid inputs
-- **Extensibility**: Easily extend to support different models with minimal changes
+## Table of Contents
 
-## AuthN and AuthZ examples ready-to-go:  
-- JWT unsigned and not encrypted for basic knowledge  
-- JWS ("alg": "HS512") signed with HMAC SHA-512 using a symmetric key  
-- JWS ("alg": "RS512") signed with RSA SHA-512 using a X509 Certificate asymmetric key  
-- JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with HMAC SHA-512 using a symmetric key  
-- JWE ("enc": "A256CBC-HS512", "alg": "dir") encrypted with AES256 using a symmetric key and signed with RSA SHA-512 using a X509 Certificate asymmetric key  
-- JOSE ("enc": "A256CBC-HS512", "alg": "RSA-OAEP") encrypted with RSA-OAEP using a X509 Certificate asymmetric key and signed with RSA-SSA-PSS-SHA512 using another X509 Certificate asymmetric key  
-- Test API for Login, Authentication and Authorization with one of the generated Bearer token  
-  
-# How to use token examples  
-1. Call a generate token method and copy the returned Bearer token *token*  
-2. Log in clicking the Authorize green button in the Swagger UI and enter the value: "Bearer *token*" (without double quotes, replace *token* with its value)  
-3. Call tryToken method. You will get 200 if authenticated, 401 otherwise  
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Design Patterns](#design-patterns)
+- [Technologies](#technologies)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [Adding a New Use Case](#adding-a-new-use-case)
+- [License](#license)
 
-## How to generate a PFX certificate
-If you want to manually generate a .pfx file, you can use the following OpenSSL commands, then copy it to the Certificates folder of the project:  
+---
 
+## Overview
+
+This repository provides a clean, minimal, and opinionated starting point for ASP.NET Core APIs. It demonstrates how to combine Minimal APIs with architectural best practices — keeping the codebase simple, testable, and easy to extend — without relying on third-party mediator packages.
+
+---
+
+## Architecture
+
+The solution is organized into **3 layers**, each with a strict dependency rule: **outer layers depend on inner layers, never the other way around**.
+
+The **Api** project has dependencies on both Infrastructure and Core.
+
+The **Infrastructure** project has dependencies on Core.
+
+The **Core** project has **zero dependencies** on Infrastructure or any framework-specific package.
+
+---
+
+## Design Patterns
+
+### Clean Architecture
+
+Each layer only references layers closer to the center. Concrete types (e.g., `AppDbContext`, `WeatherForecastRepository`) are never referenced by the `Core` project or the endpoint definitions — they are resolved through DI at startup.
+
+### Domain-Driven Design (DDD)
+
+- **Encapsulated entities**: `WeatherForecast` exposes `private set` properties and a static `Create(...)` factory method that enforces invariants at construction time.
+- **Repository interface in the Domain**: `IWeatherForecastRepository` is owned by the domain layer, not by Infrastructure.
+- **No anemic model**: entity creation logic lives inside the entity itself, not in a service.
+
+### CQRS (without MediatR)
+
+Commands and queries are fully separated using two lightweight generic interfaces defined in `Application/Abstractions`:
+```csharp
+public interface IQueryHandler<TQuery, TResult> { Task<TResult> HandleAsync(TQuery query); }
+public interface ICommandHandler<TCommand, TResult> { Task<TResult> HandleAsync(TCommand command); }
 ```
-openssl genrsa -aes256 -out sign-key.pem 2048  
-openssl req -new -x509 -sha256 -outform pem -key sign-key.pem -days 365 -out sign-cert.pem  
-openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.pem  
-```
-
-## How to generate NLog table  
-You can use the following T-SQL command to generate a table working with this NLog example:  
-
-```
-CREATE TABLE [dbo].[NLog] (
-    [ID]        INT            IDENTITY (1, 1) NOT NULL,
-    [Logged]    DATETIME       NULL,
-    [Level]     NVARCHAR (MAX) NULL,
-    [Message]   NVARCHAR (MAX) NULL,
-    [Logger]    NVARCHAR (MAX) NULL,
-    [Callsite]  NVARCHAR (MAX) NULL,
-    [Exception] NVARCHAR (MAX) NULL,
-    PRIMARY KEY CLUSTERED ([ID] ASC)
-);
+Each use case is a single, focused class. Endpoints inject only the handler they need:
+```csharp
+// Query 
+app.MapGet("/weatherforecast", async (IQueryHandler<GetAllWeatherForecastsQuery, IEnumerable<WeatherForecast>> handler) => Results.Ok(await handler.HandleAsync(new GetAllWeatherForecastsQuery())));
+// Command 
+app.MapPost("/weatherforecast", async (CreateWeatherForecastCommand command, ICommandHandler<CreateWeatherForecastCommand, WeatherForecast> handler) => { var created = await handler.HandleAsync(command); return Results.Created($"/weatherforecast/{created.Id}", created); });
 ```
 
-# Sources and useful links
-1. RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format - https://www.rfc-editor.org/rfc/rfc8259
-2. RFC 7518: JSON Web Algorithms (JWA) - https://www.rfc-editor.org/rfc/rfc7518  
-3. RFC 7520: Examples of Protecting Content Using JSON Object Signing and Encryption (JOSE) - https://www.rfc-editor.org/rfc/rfc7520.html
-4. RFC 8017: PKCS #1: RSA Cryptography Specifications Version 2.2 - https://www.rfc-editor.org/rfc/rfc8017
+### Dependency Injection via Extension Methods
 
-# FAQ
-### When sending a JWT (more properly a JWS) from microservice A to microservice B, should microservice A sign the token using: its own public key, or its own private key, or microservice B's public key, or microservice B's private key?
+Each layer registers its own services through dedicated extension methods, keeping `Program.cs` clean:
+```csharp
+builder.Services.AddApplication(); builder.Services.AddInfrastructure(builder.Configuration);
+```
+---
 
-Microservice A should sign the token using its own private key. The digital signature is used to verify the integrity of the token and to prove that it was sent from a trustworthy source. When microservice A sends the JWT to B, it signs the token with its own private key to prove that it was sent by A and that the contents of the token have not been altered during transmission. Microservice B can then verify the signature using A's public key. This way, B can be sure that the token was sent by A and that the contents of the token have not been altered during transmission.
+## Technologies
 
-### When sending a JWT (more properly a JWE) from microservice A to microservice B, should microservice A encrypt the token using: its own public key, or its own private key, or microservice B's public key, or microservice B's private key?
+| Technology | Version | Purpose |
 
-Microservice A should encrypt the token using microservice B's public key. Encryption is used to protect sensitive data inside the token during transmission from A to B. In an asymmetric encryption system, the public key is used to encrypt data and verify the signature, while the private key is used to decrypt data and sign the token. When microservice A sends the JWT to B, it should encrypt the token using B's public key so that only B, possessing the corresponding private key, can decrypt the sensitive data.
+| [.NET](https://dotnet.microsoft.com/) | 10 | Runtime & SDK |  
+| [ASP.NET Core Minimal APIs](https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis) | 10 | HTTP layer |  
+| [Entity Framework Core](https://learn.microsoft.com/ef/core/) | 10 | ORM |  
+| [SQL Server](https://www.microsoft.com/sql-server) | — | Relational database |  
+| [Swagger / Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) | 10 | API documentation |  
 
-In summary, microservice A should sign the JWT using its own private key, and microservice B should verify the signature using A's public key. Microservice A should encrypt the JWT using B's public key and only B, possessing the corresponding private key, will be able to decrypt the sensitive data.
+---
+
+## Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- A running **SQL Server** instance (local or remote)
+- [EF Core CLI tools](https://learn.microsoft.com/ef/core/cli/dotnet)
+dotnet tool install --global dotnet-ef
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/RobertoFalconi/MinimalAPIsTemplate.git 
+```
+### 2. Configure the connection string
+
+This is a project with a code-first approach. DB should be created on the first run. You can edit `MinimalAPIsAndCleanArchitecture/appsettings.json` to change the ConnectionString:
+```json
+{ "ConnectionStrings": { "DefaultConnection": "Server=YOUR_SERVER;Database=WeatherDb;Trusted_Connection=True;TrustServerCertificate=True;" } }
+```
+
+### 3. Apply database migrations
+```bash
+dotnet ef database update --project MinimalAPIsAndCleanArchitecture.Infrastructure --startup-project MinimalAPIsAndCleanArchitecture
+```
+
+### 4. Run the application
+```bash
+dotnet run --project MinimalAPIsAndCleanArchitecture
+```
+The Swagger UI opens automatically in the browser on startup (development mode).
+
+---
+
+## API Endpoints
+
+| Method | Route | Description | Request body |
+
+| `GET` | `/weatherforecast` | Returns all weather forecasts | — |  
+| `POST` | `/weatherforecast` | Creates a new weather forecast | `{ "date": "2026-03-04", "temperatureC": 22, "summary": "Warm" }` |  
+
+### Example — POST `/weatherforecast`
+
+**Request**
+```json
+{ "date": "2026-03-04", "temperatureC": 22, "summary": "Warm" }
+```
+**Response** `201 Created`
+```json
+{ "id": 1, "date": "2026-03-04", "temperatureC": 22, "temperatureF": 71, "summary": "Warm" }
+```
+
+---
+
+## Adding a New Use Case
+
+The CQRS structure makes it straightforward to add new features without touching existing code (**Open/Closed Principle**).
+
+**Example: delete a forecast by ID**
+
+#### 1. Create the command
+```csharp
+// Core/Application/Commands/DeleteWeatherForecastCommand.cs 
+public record DeleteWeatherForecastCommand(int Id);
+```
+#### 2. Extend the repository interface
+```csharp
+// Core/Domain/Interfaces/IWeatherForecastRepository.cs 
+Task DeleteAsync(int id);
+```
+#### 3. Implement the handler
+```csharp
+// Core/Application/Commands/DeleteWeatherForecastCommandHandler.cs 
+public class DeleteWeatherForecastCommandHandler(IWeatherForecastRepository repository) : ICommandHandler<DeleteWeatherForecastCommand, bool> { public async Task<bool> HandleAsync(DeleteWeatherForecastCommand command) { await repository.DeleteAsync(command.Id); return true; } }
+```
+#### 4. Register in DI
+```csharp
+// Core/DependencyInjection.cs 
+services.AddScoped< ICommandHandler<DeleteWeatherForecastCommand, bool>, DeleteWeatherForecastCommandHandler>();
+```
+#### 5. Map the endpoint
+```csharp
+// Endpoints/WeatherForecastEndpoint.cs 
+app.MapDelete("/weatherforecast/{id:int}", async (int id, ICommandHandler<DeleteWeatherForecastCommand, bool> handler) => { await handler.HandleAsync(new DeleteWeatherForecastCommand(id)); return Results.NoContent(); }).WithName("DeleteWeatherForecast");
+```
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
