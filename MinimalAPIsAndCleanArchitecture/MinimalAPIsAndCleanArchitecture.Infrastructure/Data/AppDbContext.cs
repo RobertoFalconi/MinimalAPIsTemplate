@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MinimalAPIsAndCleanArchitecture.Core.Models;
+using MinimalAPIsAndCleanArchitecture.Core.Domain.Entities;
 
 namespace MinimalAPIsAndCleanArchitecture.Infrastructure.Data;
 

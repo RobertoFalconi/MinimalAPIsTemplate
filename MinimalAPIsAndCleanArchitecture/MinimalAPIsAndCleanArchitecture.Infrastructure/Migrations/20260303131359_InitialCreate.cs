@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MinimalAPIsAndCleanArchitecture.Core.Migrations;
+namespace MinimalAPIsAndCleanArchitecture.Infrastructure.Migrations;
 
 /// <inheritdoc />
 public partial class InitialCreate : Migration

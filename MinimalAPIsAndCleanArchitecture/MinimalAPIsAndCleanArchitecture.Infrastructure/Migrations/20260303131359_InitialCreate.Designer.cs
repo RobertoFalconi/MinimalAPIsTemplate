@@ -9,7 +9,7 @@ using MinimalAPIsAndCleanArchitecture.Infrastructure.Data;
 
 #nullable disable
 
-namespace MinimalAPIsAndCleanArchitecture.Core.Migrations
+namespace MinimalAPIsAndCleanArchitecture.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260303131359_InitialCreate")]
@@ -25,7 +25,7 @@ namespace MinimalAPIsAndCleanArchitecture.Core.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MinimalAPIsAndCleanArchitecture.Core.Models.WeatherForecast", b =>
+            modelBuilder.Entity("MinimalAPIsAndCleanArchitecture.Core.Domain.Entities.WeatherForecast", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

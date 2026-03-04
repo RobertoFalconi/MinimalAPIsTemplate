@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using MinimalAPIsAndCleanArchitecture.Core.Interfaces;
-using MinimalAPIsAndCleanArchitecture.Core.Models;
+using MinimalAPIsAndCleanArchitecture.Core.Domain.Entities;
+using MinimalAPIsAndCleanArchitecture.Core.Domain.Interfaces;
 using MinimalAPIsAndCleanArchitecture.Infrastructure.Data;
 
-namespace MinimalAPIsAndCleanArchitecture.Infrastucture.Repositories;
+namespace MinimalAPIsAndCleanArchitecture.Infrastructure.Repositories;
 
 public class WeatherForecastRepository(AppDbContext context) : IWeatherForecastRepository
 {

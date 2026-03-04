@@ -1,5 +1,5 @@
-using MinimalAPIsAndCleanArchitecture.Core.Interfaces;
-using MinimalAPIsAndCleanArchitecture.Core.Models;
+using MinimalAPIsAndCleanArchitecture.Core.Application.Commands;
+using MinimalAPIsAndCleanArchitecture.Core.Application.Interfaces;
 
 namespace MinimalAPIsAndCleanArchitecture.Endpoints;
 
@@ -14,9 +14,9 @@ internal static class WeatherForecastEndpoint
         })
         .WithName("GetWeatherForecast");
 
-        app.MapPost("/weatherforecast", async (CreateWeatherForecastRequest request, IWeatherForecastService service) =>
+        app.MapPost("/weatherforecast", async (CreateWeatherForecastCommand command, IWeatherForecastService service) =>
         {
-            var created = await service.CreateAsync(request);
+            var created = await service.CreateAsync(command);
             return Results.Created($"/weatherforecast/{created.Id}", created);
         })
         .WithName("CreateWeatherForecast");

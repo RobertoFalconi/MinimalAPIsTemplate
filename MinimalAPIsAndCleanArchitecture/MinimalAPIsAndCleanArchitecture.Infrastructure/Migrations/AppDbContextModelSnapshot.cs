@@ -22,7 +22,7 @@ namespace MinimalAPIsAndCleanArchitecture.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MinimalAPIsAndCleanArchitecture.Core.Models.WeatherForecast", b =>
+            modelBuilder.Entity("MinimalAPIsAndCleanArchitecture.Core.Domain.Entities.WeatherForecast", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

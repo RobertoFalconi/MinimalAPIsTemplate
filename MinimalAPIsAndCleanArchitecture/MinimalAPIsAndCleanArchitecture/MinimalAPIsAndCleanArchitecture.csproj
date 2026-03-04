@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MinimalAPIsAndCleanArchitecture.Core\MinimalAPIsAndCleanArchitecture.Core.csproj" />
     <ProjectReference Include="..\MinimalAPIsAndCleanArchitecture.Infrastructure\MinimalAPIsAndCleanArchitecture.Infrastructure.csproj" />
   </ItemGroup>
 

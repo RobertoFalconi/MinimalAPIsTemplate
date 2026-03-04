@@ -1,6 +1,6 @@
-using MinimalAPIsAndCleanArchitecture.Core.Models;
+using MinimalAPIsAndCleanArchitecture.Core.Domain.Entities;
 
-namespace MinimalAPIsAndCleanArchitecture.Core.Interfaces;
+namespace MinimalAPIsAndCleanArchitecture.Core.Domain.Interfaces;
 
 public interface IWeatherForecastRepository
 {
