@@ -18,6 +18,10 @@ public static class DependencyInjection
             ICommandHandler<CreateWeatherForecastCommand, WeatherForecastResponse>,
             CreateWeatherForecastCommandHandler>();
 
+        services.AddScoped<
+            ICommandHandler<GenerateTokenCommand, TokenResponse>,
+            GenerateTokenCommandHandler>();
+
         return services;
     }
 }

@@ -15,7 +15,8 @@ internal static class WeatherForecastEndpoint
                 var result = await handler.HandleAsync(new GetAllWeatherForecastsQuery());
                 return Results.Ok(result);
             })
-            .WithName("GetWeatherForecast");
+            .WithName("GetWeatherForecast")
+            .RequireAuthorization();
 
         app.MapPost("/weatherforecast",
             async (CreateWeatherForecastCommand command,
@@ -24,6 +25,7 @@ internal static class WeatherForecastEndpoint
                 var created = await handler.HandleAsync(command);
                 return Results.Created($"/weatherforecast/{created.Id}", created);
             })
-            .WithName("CreateWeatherForecast");
+            .WithName("CreateWeatherForecast")
+            .RequireAuthorization();
     }
 }
