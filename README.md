@@ -14,6 +14,7 @@ A production-ready template for building **.NET 10 Minimal APIs** following **Cl
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [API Endpoints](#api-endpoints)
+- [Authentication](#authentication)
 - [Adding a New Use Case](#adding-a-new-use-case)
 - [License](#license)
 
@@ -80,7 +81,7 @@ builder.Services.AddApplication(); builder.Services.AddInfrastructure(builder.Co
 | [ASP.NET Core Minimal APIs](https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis) | 10 | HTTP layer |  
 | [Entity Framework Core](https://learn.microsoft.com/ef/core/) | 10 | ORM |  
 | [SQL Server](https://www.microsoft.com/sql-server) | — | Relational database |  
-| [Swagger / Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) | 10 | API documentation |  
+| [Scalar](https://scalar.com/) | – | API documentation |
 
 ---
 
@@ -115,16 +116,17 @@ dotnet ef database update --project MinimalAPIsAndCleanArchitecture.Infrastructu
 ```bash
 dotnet run --project MinimalAPIsAndCleanArchitecture
 ```
-The Swagger UI opens automatically in the browser on startup (development mode).
+The **Scalar API Reference** opens automatically at `http://localhost:5179/scalar/v1` in the browser on startup (development mode).
 
 ---
 
 ## API Endpoints
 
-| Method | Route | Description | Request body |
-
-| `GET` | `/weatherforecast` | Returns all weather forecasts | — |  
-| `POST` | `/weatherforecast` | Creates a new weather forecast | `{ "date": "2026-03-04", "temperatureC": 22, "summary": "Warm" }` |  
+| Method | Route | Auth required | Description | Request body |
+|--------|-------|:---:|-------------|--------------|
+| `POST` | `/auth/token` | ✗ | Returns a JWT Bearer token | `{ "username": "string", "password": "string" }` |
+| `GET` | `/weatherforecast` | ✔ | Returns all weather forecasts | — |
+| `POST` | `/weatherforecast` | ✔ | Creates a new weather forecast | `{ "date": "2026-03-04", "temperatureC": 22, "summary": "Warm" }` |
 
 ### Example — POST `/weatherforecast`
 
@@ -136,6 +138,49 @@ The Swagger UI opens automatically in the browser on startup (development mode).
 ```json
 { "id": 1, "date": "2026-03-04", "temperatureC": 22, "temperatureF": 71, "summary": "Warm" }
 ```
+
+---
+
+## Authentication
+
+The API uses **JWT Bearer** authentication. Protected endpoints require a valid token in the `Authorization` header.
+
+### 1. Obtain a token
+
+Call `POST /auth/token` with valid credentials:
+
+```http
+POST /auth/token
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": ""
+}
+```
+
+**Response** `200 OK`
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+> ⚠️ Demo credentials are `` / ``. Replace `GenerateTokenCommandHandler` with a real user store before going to production.
+
+### 2. Call a protected endpoint
+
+Add the token to every subsequent request via the `Authorization` header:
+
+```http
+GET /weatherforecast
+Authorization: Bearer <token>
+```
+
+### 3. Using Scalar
+
+1. Open `http://localhost:5179/scalar/v1`
+2. Add "**Authorization**" in the headers with "Authorization" as key and paste the token in the value field with "Bearer " prefix
 
 ---
 
