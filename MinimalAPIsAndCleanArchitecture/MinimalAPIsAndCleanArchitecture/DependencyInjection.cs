@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using MinimalAPIsAndCleanArchitecture.Core.Application.Abstractions;
-using MinimalAPIsAndCleanArchitecture.Core.Application.Commands;
-using MinimalAPIsAndCleanArchitecture.Core.Application.DTOs;
 using MinimalAPIsAndCleanArchitecture.Services;
 using System.Text;
 
@@ -37,24 +34,6 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
-        {
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                In = ParameterLocation.Header,
-                Description = "Inserisci il token JWT nel campo. Esempio: eyJhbGci..."
-            });
-            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference("Bearer", document)] = []
-            });
-        });
 
         return services;
     }
